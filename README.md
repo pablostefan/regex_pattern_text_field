@@ -49,7 +49,6 @@ Then, run `flutter pub get` to fetch the package.
    Define the regex pattern styles using the `regexPatternStyles` property. It expects a list of `RegexPatternTextStyle` objects, where each object contains a regular expression pattern (`regexPattern`) and a text style (`textStyle`) to be applied to the matched text. The `regexPattern` should be a valid regex pattern string.
 
    You can also customize the appearance and behavior of the `RegexPatternTextField` using its various properties, such as `decoration`, `keyboardType`, `textInputAction`, etc.
-   ```
 
 ## Customization
 
