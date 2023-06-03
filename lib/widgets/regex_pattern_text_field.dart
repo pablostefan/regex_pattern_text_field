@@ -24,7 +24,6 @@ class RegexPatternTextField extends StatefulWidget {
   final TextAlignVertical? textAlignVertical;
   final TextDirection? textDirection;
   final bool readOnly;
-  final ToolbarOptions? toolbarOptions;
   final bool? showCursor;
   final bool autofocus;
   final String obscuringCharacter;
@@ -89,7 +88,6 @@ class RegexPatternTextField extends StatefulWidget {
     this.textAlignVertical,
     this.textDirection,
     this.readOnly = false,
-    this.toolbarOptions,
     this.showCursor,
     this.autofocus = false,
     this.obscuringCharacter = '•',
@@ -185,7 +183,6 @@ class _RegexPatternTextFieldState extends State<RegexPatternTextField> {
         smartDashesType: widget.smartDashesType,
         smartQuotesType: widget.smartQuotesType,
         strutStyle: widget.strutStyle,
-        toolbarOptions: widget.toolbarOptions,
         selectionControls: widget.selectionControls,
         mouseCursor: widget.mouseCursor,
         cursorOpacityAnimates: widget.cursorOpacityAnimates,
