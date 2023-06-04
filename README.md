@@ -1,7 +1,7 @@
 ```markdown
 # Regex Pattern Text Field
 
-![Overview](https://github.com/pablostefan/regex_pattern_text_field/blob/main/assets/regex_pattern_text_field_image.png)
+![Overview](https://github.com/pablostefan/regex_pattern_text_field/blob/b2933b62e8806ee7caccc2cea8ebe3c6ede553ff/assets/regex_pattern_text_field_image.png)
 
 The `RegexPatternTextField` is a custom Flutter widget that allows you to perform pattern matching and apply styles to matched patterns in a text field. It is particularly useful when you want to highlight specific patterns or extract information from user input.
 
