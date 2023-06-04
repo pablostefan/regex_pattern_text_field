@@ -1,14 +1,35 @@
 class RegexPatternHelper {
-  static const String email = r'^[\w\.-]+@[\w\.-]+\.\w+$';
+  /// Github repository regex
+  static String github = r'((git|ssh|http(s)?)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:/\-~]+)(\.git)(\/)?';
 
-  static const String emoji =
-      r'(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])';
+  /// Twitter regex
+  static String twitter = r'(?:(?:twitter?|tw): @)+[\w/\-_?=%.]+';
 
+  /// Facebook regex
+  static String facebook = r'(?:(?:facebook?|fb?|Facebook): @)+[\w/\-_?=%.]+';
+
+  /// InstagramPattern regex
+  static String instagram = r'(?:(?:instagram?|insta?|Instagram): @)+[\w/\-_?=%.]+';
+
+  /// Phone Number regex
+  static String phone =
+      r'\(?\+[0-9]{1,3}\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\w{1,10}\s?\d{1,6})?';
+
+  /// Email regex
+  static String email =
+      r'([a-z0-9]+([-+._][a-z0-9]+){0,2}@.*?(\.(a(?:[cdefgilmnoqrstuwxz]|ero|(?:rp|si)a)|b(?:[abdefghijmnorstvwyz]iz)|c(?:[acdfghiklmnoruvxyz]|at|o(?:m|op))|d[ejkmoz]|e(?:[ceghrstu]|du)|f[ijkmor]|g(?:[abdefghilmnpqrstuwy]|ov)|h[kmnrtu]|i(?:[delmnoqrst]|n(?:fo|t))|j(?:[emop]|obs)|k[eghimnprwyz]|l[abcikrstuvy]|m(?:[acdeghklmnopqrstuvwxyz]|il|obi|useum)|n(?:[acefgilopruz]|ame|et)|o(?:m|rg)|p(?:[aefghklmnrstwy]|ro)|qa|r[eosuw]|s[abcdeghijklmnortuvyz]|t(?:[cdfghjklmnoprtvwz]|(?:rav)?el)|u[agkmsyz]|v[aceginu]|w[fs]|y[etu]|z[amw])\b){1,2})';
+
+  /// DateTime regex
+  static String dateTime = r'\d{1,2} [a-zA-Z]{3} \d{4}';
+
+  /// URL regex
   static const String url =
-      r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,6}(\/[-a-zA-Z0-9()@:%_\+À-ü.~#?&\/=]*)?";
+      r"((https?:www\.)|(https?:\/\/)|(www\.))[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9]{1,}(\/[-a-zA-Z0-9()@:%_\+À-ü.~#?&\/=]*)?";
 
+  /// Mentions regex
   static const String mention = "@+($_stringRegexPattern+)";
 
+  /// Hashtag regex
   static const String hashtag = "#+($_stringRegexPattern+)";
 
   static const String _stringRegexPattern =

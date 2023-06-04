@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:regex_pattern_text_field/helpers/regex_pattern_helper.dart';
 
-enum RegexPatternType { url, hashtag, mention, emoji, email }
+enum RegexPatternType { email, url, hashtag, mention }
 
 extension RegexPatternTypeExtension on RegexPatternType {
   String get pattern {
@@ -12,8 +12,6 @@ extension RegexPatternTypeExtension on RegexPatternType {
         return RegexPatternHelper.hashtag;
       case RegexPatternType.mention:
         return RegexPatternHelper.mention;
-      case RegexPatternType.emoji:
-        return RegexPatternHelper.emoji;
       case RegexPatternType.email:
         return RegexPatternHelper.email;
       default:
@@ -29,8 +27,6 @@ extension RegexPatternTypeExtension on RegexPatternType {
         return const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold);
       case RegexPatternType.mention:
         return const TextStyle(color: Colors.cyan, fontWeight: FontWeight.bold);
-      case RegexPatternType.emoji:
-        return const TextStyle(color: Colors.red, fontWeight: FontWeight.bold);
       case RegexPatternType.email:
         return const TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold);
       default:

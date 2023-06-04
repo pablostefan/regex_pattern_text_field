@@ -27,7 +27,11 @@ class RegexPatternTextEditingController extends TextEditingController {
 
   String _onMatchValueText(Match match) {
     var text = match.group(0) ?? "";
-    _onMatch?.call(RegexPatternMatchedText(text: text, start: match.start, end: match.end, pattern: match.pattern));
+    var textPart = RegexPatternTextStyleHelper.findMatchingTextStyle(text, _textPartStyleList);
+    var matchedText = RegexPatternMatchedText(
+        type: textPart?.type, text: text, start: match.start, end: match.end, pattern: match.pattern);
+
+    _onMatch?.call(matchedText);
 
     return "";
   }
@@ -61,7 +65,7 @@ class RegexPatternTextEditingController extends TextEditingController {
 
   void _setTextPartStyleList(List<RegexPatternTextStyle>? regexPatternStyles, bool defaultRegexPatternStyles) {
     if (defaultRegexPatternStyles) {
-      _textPartStyleList = [...RegexPatternTextStyleHelper.defaultTextPartStyleList, ...?regexPatternStyles];
+      _textPartStyleList = [...?regexPatternStyles, ...RegexPatternTextStyleHelper.defaultTextPartStyleList];
     } else {
       _textPartStyleList = [...?regexPatternStyles];
     }
