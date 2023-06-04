@@ -1,6 +1,6 @@
 name: regex_pattern_text_field
 description: A custom text editing controller that applies styles to matched patterns in a text field.
-version: 1.0.2+1
+version: 1.0.3
 homepage: https://github.com/pablostefan/regex_pattern_text_field
 
 environment:
