@@ -86,7 +86,7 @@ Then, run `flutter pub get` to fetch the package.
      ],
      onNonMatch: (String text) {
        // Callback for non-matches (when no regex pattern is matched in the text).
-       // print("Non-match: $text");
+       print("Non-match: $text");
      },
      onMatch: (RegexPatternMatched model) {
        // Callback for matches (when a regex pattern is matched in the text).
