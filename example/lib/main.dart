@@ -25,6 +25,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final RegexPatternTextEditingController _controller = RegexPatternTextEditingController();
+
+  List<RegexPatternMatched> allMatches = [];
+
+  @override
+  void initState() {
+    _controller.addListener(() => setState(() => allMatches = _controller.regexPatternMatchedList));
+    // Access allMatches to get the list of RegexPatternMatched using _controller.regexPatternMatchedList
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,10 +47,24 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: RegexPatternTextField(
             maxLines: null,
+            regexPatternController: _controller,
+            // Controller for the text field that will store the user-entered text.
+            onSubmitted: (List<RegexPatternMatched> matches, String text) {
+              // Function called when the user submits the text by pressing the "Enter" key or "Submit" button.
+              // The 'matches' list contains the corresponding regex patterns matched in the entered text.
+              print(matches);
+            },
+            onChanged: (List<RegexPatternMatched> matches, String text) {
+              // Function called whenever the text in the text field is changed.
+              // The 'matches' list contains the corresponding regex patterns matched in the updated text.
+              print(matches);
+            },
             defaultRegexPatternStyles: true,
             // Set to 'false' to disable default pattern styles
             // Set to 'true' to enable default pattern styles
             regexPatternStyles: [
+              // Defines the styles for different regex patterns to be applied to the matched text.
+              // Each 'RegexPatternTextStyle' object represents a pattern style.
               RegexPatternTextStyle(
                 type: "github",
                 regexPattern: RegexPatternHelper.github,
@@ -78,11 +103,11 @@ class _HomePageState extends State<HomePage> {
               // Add more pattern styles as needed
             ],
             onNonMatch: (String text) {
-              // Callback for non-matches
+              // Callback for non-matches (when no regex pattern is matched in the text).
               // print("Non-match: $text");
             },
-            onMatch: (RegexPatternMatchedText model) {
-              // Callback for matches
+            onMatch: (RegexPatternMatched model) {
+              // Callback for matches (when a regex pattern is matched in the text).
               if (model.type == "myRegexPattern") print("Is my regex pattern");
               print("Match text: ${model.text}");
               print("type: ${model.type}");

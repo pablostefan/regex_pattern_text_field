@@ -4,13 +4,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:regex_pattern_text_field/controllers/regex_pattern_text_editing_controller.dart';
-import 'package:regex_pattern_text_field/models/regex_pattern_matched_text.dart';
+import 'package:regex_pattern_text_field/models/regex_pattern_matched.dart';
 import 'package:regex_pattern_text_field/models/regex_pattern_text_style.dart';
 
 class RegexPatternTextField extends StatefulWidget {
   final bool defaultRegexPatternStyles;
   final List<RegexPatternTextStyle>? regexPatternStyles;
-  final Function(RegexPatternMatchedText model)? onMatch;
+  final Function(RegexPatternMatched model)? onMatch;
   final Function(String text)? onNonMatch;
   final RegexPatternTextEditingController? regexPatternController;
   final FocusNode? focusNode;
@@ -37,9 +37,9 @@ class RegexPatternTextField extends StatefulWidget {
   final bool expands;
   final int? maxLength;
   final MaxLengthEnforcement? maxLengthEnforcement;
-  final ValueChanged<String>? onChanged;
+  final Function(List<RegexPatternMatched> regexPatternMatchedList, String text)? onChanged;
   final VoidCallback? onEditingComplete;
-  final ValueChanged<String>? onSubmitted;
+  final Function(List<RegexPatternMatched> regexPatternMatchedList, String text)? onSubmitted;
   final AppPrivateCommandCallback? onAppPrivateCommand;
   final List<TextInputFormatter>? inputFormatters;
   final bool? enabled;
@@ -157,6 +157,10 @@ class _RegexPatternTextFieldState extends State<RegexPatternTextField> {
     _controller.setOnNonMatch(widget.onNonMatch);
   }
 
+  void _regexPatternOnChange(String text) => widget.onChanged?.call(_controller.regexPatternMatchedList, text);
+
+  void _regexPatternOnSubmitted(String text) => widget.onSubmitted?.call(_controller.regexPatternMatchedList, text);
+
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -170,7 +174,7 @@ class _RegexPatternTextFieldState extends State<RegexPatternTextField> {
         inputFormatters: widget.inputFormatters,
         magnifierConfiguration: widget.magnifierConfiguration,
         onAppPrivateCommand: widget.onAppPrivateCommand,
-        onChanged: widget.onChanged,
+        onChanged: _regexPatternOnChange,
         onTapOutside: widget.onTapOutside,
         restorationId: widget.restorationId,
         scribbleEnabled: widget.scribbleEnabled,
@@ -214,7 +218,7 @@ class _RegexPatternTextFieldState extends State<RegexPatternTextField> {
         expands: widget.expands,
         onEditingComplete: widget.onEditingComplete,
         onTap: widget.onTap,
-        onSubmitted: widget.onSubmitted,
+        onSubmitted: _regexPatternOnSubmitted,
         enabled: widget.enabled,
         enableInteractiveSelection: widget.enableInteractiveSelection,
         enableSuggestions: widget.enableSuggestions,

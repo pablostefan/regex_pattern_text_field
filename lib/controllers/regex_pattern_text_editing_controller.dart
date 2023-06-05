@@ -2,24 +2,32 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:regex_pattern_text_field/helpers/regex_pattern_text_style_helper.dart';
-import 'package:regex_pattern_text_field/models/regex_pattern_matched_text.dart';
+import 'package:regex_pattern_text_field/models/regex_pattern_matched.dart';
 import 'package:regex_pattern_text_field/models/regex_pattern_text_style.dart';
 
 class RegexPatternTextEditingController extends TextEditingController {
   RegExp _combinedPattern = RegExp("");
   List<RegexPatternTextStyle>? _textPartStyleList;
-  Function(RegexPatternMatchedText)? _onMatch;
+  Function(RegexPatternMatched)? _onMatch;
   Function(String)? _onNonMatch;
 
   RegexPatternTextEditingController();
 
-  void setOnMatch(Function(RegexPatternMatchedText)? onMatch) => _onMatch = onMatch;
+  void setOnMatch(Function(RegexPatternMatched)? onMatch) => _onMatch = onMatch;
 
   void setOnNonMatch(Function(String)? onNonMatch) => _onNonMatch = onNonMatch;
 
+  List<RegexPatternMatched> get regexPatternMatchedList {
+    return _combinedPattern.allMatches(text).map((e) {
+      var text = e.group(0) ?? "";
+      var textPart = RegexPatternTextStyleHelper.findMatchingTextStyle(text, _textPartStyleList);
+      return RegexPatternMatched(type: textPart?.type, text: text, start: e.start, end: e.end, pattern: e.pattern);
+    }).toList();
+  }
+
   @override
   set value(TextEditingValue newValue) {
-    final String newDetectionContent = _extractLastWordFromValue(newValue);
+    var newDetectionContent = _extractLastWordFromValue(newValue);
     newDetectionContent.splitMapJoin(_combinedPattern, onMatch: _onMatchValueText, onNonMatch: _onNonMatchValueText);
 
     super.value = newValue;
@@ -28,7 +36,7 @@ class RegexPatternTextEditingController extends TextEditingController {
   String _onMatchValueText(Match match) {
     var text = match.group(0) ?? "";
     var textPart = RegexPatternTextStyleHelper.findMatchingTextStyle(text, _textPartStyleList);
-    var matchedText = RegexPatternMatchedText(
+    var matchedText = RegexPatternMatched(
         type: textPart?.type, text: text, start: match.start, end: match.end, pattern: match.pattern);
 
     _onMatch?.call(matchedText);
