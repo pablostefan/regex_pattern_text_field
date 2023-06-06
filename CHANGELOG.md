@@ -25,4 +25,5 @@
 ## [1.0.6] - Add changes to example
     * Add changes to example
 
-
+## [1.0.7] - Change Email Regex Pattern
+    * Change email regex pattern (https://www.ex-parrot.com/pdw/Mail-RFC822-Address.html)
