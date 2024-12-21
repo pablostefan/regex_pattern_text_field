@@ -8,6 +8,7 @@ import 'package:regex_pattern_text_field/models/regex_pattern_matched.dart';
 import 'package:regex_pattern_text_field/models/regex_pattern_text_style.dart';
 
 class RegexPatternTextField extends StatefulWidget {
+  final Object groupId;
   final bool defaultRegexPatternStyles;
   final List<RegexPatternTextStyle>? regexPatternStyles;
   final Function(RegexPatternMatched model)? onMatch;
@@ -72,11 +73,15 @@ class RegexPatternTextField extends StatefulWidget {
   final bool scribbleEnabled;
   final SpellCheckConfiguration? spellCheckConfiguration;
   final UndoHistoryController? undoController;
+  final ToolbarOptions? toolbarOptions;
+  final MaterialStatesController? statesController;
+  final bool? ignorePointers;
+  final Color? cursorErrorColor;
+  final bool onTapAlwaysCalled;
 
   const RegexPatternTextField({
-    Key? key,
-    this.regexPatternController,
-    this.regexPatternStyles,
+    super.key,
+    this.groupId = EditableText,
     this.focusNode,
     this.undoController,
     this.decoration = const InputDecoration(),
@@ -88,8 +93,10 @@ class RegexPatternTextField extends StatefulWidget {
     this.textAlignVertical,
     this.textDirection,
     this.readOnly = false,
+    this.toolbarOptions,
     this.showCursor,
     this.autofocus = false,
+    this.statesController,
     this.obscuringCharacter = '•',
     this.obscureText = false,
     this.autocorrect = true,
@@ -105,11 +112,13 @@ class RegexPatternTextField extends StatefulWidget {
     this.onAppPrivateCommand,
     this.inputFormatters,
     this.enabled,
+    this.ignorePointers,
     this.cursorWidth = 2.0,
     this.cursorHeight,
     this.cursorRadius,
     this.cursorOpacityAnimates,
     this.cursorColor,
+    this.cursorErrorColor,
     this.selectionHeightStyle = BoxHeightStyle.tight,
     this.selectionWidthStyle = BoxWidthStyle.tight,
     this.keyboardAppearance,
@@ -117,29 +126,36 @@ class RegexPatternTextField extends StatefulWidget {
     this.dragStartBehavior = DragStartBehavior.start,
     this.selectionControls,
     this.onTap,
+    this.onTapAlwaysCalled = false,
+    this.onTapOutside,
     this.mouseCursor,
     this.buildCounter,
     this.scrollController,
     this.scrollPhysics,
     this.autofillHints = const <String>[],
-    this.restorationId,
-    this.keyboardType,
-    this.smartDashesType,
-    this.smartQuotesType,
-    this.enableIMEPersonalizedLearning = true,
-    this.canRequestFocus = true,
-    this.clipBehavior = Clip.hardEdge,
     this.contentInsertionConfiguration,
-    this.contextMenuBuilder,
-    this.magnifierConfiguration,
-    this.enableInteractiveSelection,
-    this.onTapOutside,
+    this.clipBehavior = Clip.hardEdge,
+    this.restorationId,
     this.scribbleEnabled = true,
+    this.enableIMEPersonalizedLearning = true,
+    this.contextMenuBuilder = _defaultContextMenuBuilder,
+    this.canRequestFocus = true,
     this.spellCheckConfiguration,
+    this.magnifierConfiguration,
+    this.regexPatternController,
+    this.regexPatternStyles,
+    this.keyboardType,
     this.defaultRegexPatternStyles = true,
     this.onMatch,
     this.onNonMatch,
-  }) : super(key: key);
+    this.smartDashesType,
+    this.smartQuotesType,
+    this.enableInteractiveSelection,
+  });
+
+  static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState) {
+    return AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState);
+  }
 
   @override
   State<RegexPatternTextField> createState() => _RegexPatternTextFieldState();
@@ -164,7 +180,6 @@ class _RegexPatternTextFieldState extends State<RegexPatternTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-        key: widget.key,
         controller: _controller,
         canRequestFocus: widget.canRequestFocus,
         clipBehavior: widget.clipBehavior,
