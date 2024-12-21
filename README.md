@@ -2,7 +2,7 @@
 
 The `RegexPatternTextField` is a powerful Flutter widget that simplifies working with pattern matching and applying styles to matched text in a text field. This widget is especially useful for highlighting patterns like URLs, emails, hashtags, mentions, and more.
 
-![regex_pattern_text_field](https://github.com/pablostefan/regex_pattern_text_field/blob/db768f72a0df00f304929da44b5753de3c27ddd7/readme_contents/regex_pattern_text_field_image.png)
+![regex_pattern_text_field](readme_contents/regex_pattern_text_field_image.png)
 
 ---
 
