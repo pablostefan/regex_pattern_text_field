@@ -50,3 +50,10 @@
 
 ### Fixed
 - Minor bugs in regex pattern processing.
+
+## [1.0.10] - Improved Documentation and Features
+### Changed
+- Refactored example code for improved readability and usability:
+  - Introduced dynamic feedback for pattern matches.
+  - Improved text field handling for large inputs.
+- Optimized `RegexPatternTextField` for better performance and accuracy in regex matching.
