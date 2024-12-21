@@ -29,6 +29,12 @@
     * Change email regex pattern (https://www.ex-parrot.com/pdw/Mail-RFC822-Address.html)
 
 ## [1.0.8] - Improved Documentation and Features
+    * Updated README.md with:
+        * Detailed usage examples and advanced patterns.
+        * Clarifications for callbacks (`onMatch`, `onNonMatch`, `onChanged`, `onSubmitted`).
+        * Customization options for combining default and custom styles.
+
+## [1.0.9] - Improved Documentation and Features
 ### Added
 - Updated `README.md` with:
     - Detailed usage examples and advanced patterns.
