@@ -27,8 +27,16 @@ class RegexPatternTextEditingController extends TextEditingController {
 
   @override
   set value(TextEditingValue newValue) {
-    var newDetectionContent = _extractLastWordFromValue(newValue);
-    newDetectionContent.splitMapJoin(_combinedPattern, onMatch: _onMatchValueText, onNonMatch: _onNonMatchValueText);
+    try {
+      var newDetectionContent = _extractLastWordFromValue(newValue);
+      newDetectionContent.splitMapJoin(
+        _combinedPattern,
+        onMatch: _onMatchValueText,
+        onNonMatch: _onNonMatchValueText,
+      );
+    } catch (e) {
+      debugPrint("Error in processing value: $e");
+    }
 
     super.value = newValue;
   }
@@ -37,7 +45,12 @@ class RegexPatternTextEditingController extends TextEditingController {
     var text = match.group(0) ?? "";
     var textPart = RegexPatternTextStyleHelper.findMatchingTextStyle(text, _textPartStyleList);
     var matchedText = RegexPatternMatched(
-        type: textPart?.type, text: text, start: match.start, end: match.end, pattern: match.pattern);
+      type: textPart?.type,
+      text: text,
+      start: match.start,
+      end: match.end,
+      pattern: match.pattern,
+    );
 
     _onMatch?.call(matchedText);
 
@@ -46,7 +59,6 @@ class RegexPatternTextEditingController extends TextEditingController {
 
   String _onNonMatchValueText(String nonMatch) {
     _onNonMatch?.call(nonMatch);
-
     return "";
   }
 
@@ -62,6 +74,7 @@ class RegexPatternTextEditingController extends TextEditingController {
 
       return detectionContent;
     } catch (e) {
+      debugPrint("Error in extracting last word: $e");
       return "";
     }
   }
@@ -84,6 +97,7 @@ class RegexPatternTextEditingController extends TextEditingController {
       final combinedPatternString = _textPartStyleList?.map((style) => style.regexPattern).join('|');
       _combinedPattern = RegExp(combinedPatternString ?? "", multiLine: true, caseSensitive: false);
     } catch (e) {
+      debugPrint("Error in setting combined pattern: $e");
       _combinedPattern = RegExp("");
     }
   }
@@ -92,9 +106,11 @@ class RegexPatternTextEditingController extends TextEditingController {
   TextSpan buildTextSpan({BuildContext? context, TextStyle? style, required bool withComposing}) {
     final List<TextSpan> textSpanChildren = [];
 
-    text.splitMapJoin(_combinedPattern,
-        onMatch: (Match match) => _addStyledTextOnMatch(textSpanChildren, match),
-        onNonMatch: (String nonMatchText) => _addTextOnNonMatch(textSpanChildren, nonMatchText, style));
+    text.splitMapJoin(
+      _combinedPattern,
+      onMatch: (Match match) => _addStyledTextOnMatch(textSpanChildren, match),
+      onNonMatch: (String nonMatchText) => _addTextOnNonMatch(textSpanChildren, nonMatchText, style),
+    );
 
     return TextSpan(style: style, children: textSpanChildren);
   }
@@ -105,7 +121,7 @@ class RegexPatternTextEditingController extends TextEditingController {
       var textPart = RegexPatternTextStyleHelper.findMatchingTextStyle(textToBeStyled, _textPartStyleList);
       textSpanChildren.add(TextSpan(text: textToBeStyled, style: textPart?.textStyle));
     } catch (e) {
-      throw Exception("Error on _addStyledTextOnMatch: Failed to add styled text for 'textToBeStyled'.");
+      debugPrint("Error in adding styled text: $e");
     }
     return "";
   }
@@ -114,7 +130,7 @@ class RegexPatternTextEditingController extends TextEditingController {
     try {
       textSpanChildren.add(TextSpan(text: textToBeStyled, style: style));
     } catch (e) {
-      throw Exception("The style of the text part '$textToBeStyled' is not defined in SocialTextFieldHelper");
+      debugPrint("Error in adding non-matched text: $e");
     }
     return "";
   }

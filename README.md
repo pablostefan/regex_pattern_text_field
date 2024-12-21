@@ -1,276 +1,224 @@
 # Regex Pattern Text Field
 
-The `RegexPatternTextField` is a custom Flutter widget that allows you to perform pattern matching and apply styles to matched patterns in a text field. It is particularly useful when you want to highlight specific patterns or extract information from user input.
-
+The `RegexPatternTextField` is a powerful Flutter widget that simplifies working with pattern matching and applying styles to matched text in a text field. This widget is especially useful for highlighting patterns like URLs, emails, hashtags, mentions, and more.
 
 ![regex_pattern_text_field](https://github.com/pablostefan/regex_pattern_text_field/blob/db768f72a0df00f304929da44b5753de3c27ddd7/readme_contents/regex_pattern_text_field_image.png)
 
-## Usage
+---
 
-To use the `RegexPatternTextField`, follow these steps:
+## Features
 
-1. Add the `regex_pattern_text_field` package to your `pubspec.yaml` file:
+- **Pattern Matching**: Recognize and style text based on predefined or custom regex patterns.
+- **Customizable Styles**: Apply unique text styles for each matched pattern.
+- **Real-Time Updates**: Monitor and react to changes in the input dynamically.
+- **Extensibility**: Easily add new regex patterns and their corresponding styles.
 
-   ```yaml
-   dependencies:
-     regex_pattern_text_field: ^1.0.0
-   ```
+---
 
-Then, run `flutter pub get` to fetch the package.
+## Getting Started
 
-2. Import the required packages:
+### Installation
 
-   ```dart
-   import 'package:regex_pattern_text_field/regex_pattern_text_field.dart';
-   ```
+Add the package to your `pubspec.yaml` file:
 
-3. Use the `RegexPatternTextField` widget in your application:
+```yaml
+dependencies:
+  regex_pattern_text_field: ^1.0.0
+```
 
-   ```dart
-   RegexPatternTextField(
-     maxLines: null,
-     regexPatternController: _controller, 
-     // Controller for the text field that will store the user-entered text.
-     onSubmitted: (List<RegexPatternMatched> matches, String text) {
-       // Function called when the user submits the text by pressing the "Enter" key or "Submit" button.
-       // The 'matches' list contains the corresponding regex patterns matched in the entered text.
-       print(matches);
-     },
-     onChanged: (List<RegexPatternMatched> matches, String text) {
-       // Function called whenever the text in the text field is changed.
-       // The 'matches' list contains the corresponding regex patterns matched in the updated text.
-       print(matches);
-     },
-     defaultRegexPatternStyles: true,
-     // Set to 'false' to disable default pattern styles
-     // Set to 'true' to enable default pattern styles
-     regexPatternStyles: [
-       // Defines the styles for different regex patterns to be applied to the matched text.
-       // Each 'RegexPatternTextStyle' object represents a pattern style.
-       RegexPatternTextStyle(
-         type: "github",
-         regexPattern: RegexPatternHelper.github,
-         textStyle: const TextStyle(color: Colors.redAccent),
-       ),
-       RegexPatternTextStyle(
-         type: "facebook",
-         regexPattern: RegexPatternHelper.facebook,
-         textStyle: const TextStyle(color: Colors.lightGreen),
-       ),
-       RegexPatternTextStyle(
-         type: "twitter",
-         regexPattern: RegexPatternHelper.twitter,
-         textStyle: const TextStyle(color: Colors.deepOrangeAccent),
-       ),
-       RegexPatternTextStyle(
-         type: "instagram",
-         regexPattern: RegexPatternHelper.instagram,
-         textStyle: const TextStyle(color: Colors.brown),
-       ),
-       RegexPatternTextStyle(
-         type: "phone",
-         regexPattern: RegexPatternHelper.phone,
-         textStyle: const TextStyle(color: Colors.amber),
-       ),
-       RegexPatternTextStyle(
-         type: "date",
-         regexPattern: RegexPatternHelper.dateTime,
-         textStyle: const TextStyle(color: Colors.red),
-       ),
-       RegexPatternTextStyle(
-         type: "myRegexPattern",
-         regexPattern: "%+([a-zA-Z]+)",
-         textStyle: const TextStyle(color: Colors.pink),
-       ),
-       // Add more pattern styles as needed
-     ],
-     onNonMatch: (String text) {
-       // Callback for non-matches (when no regex pattern is matched in the text).
-       print("Non-match: $text");
-     },
-     onMatch: (RegexPatternMatched model) {
-       // Callback for matches (when a regex pattern is matched in the text).
-       if (model.type == "myRegexPattern") print("Is my regex pattern");
-       print("Match text: ${model.text}");
-       print("type: ${model.type}");
-       // The 'model' object represents the matched text and its properties.
-       // It has the following attributes:
-       // - text: The matched text string.
-       // - start: The starting index of the matched text within the entered text.
-       // - end: The ending index of the matched text within the entered text.
-       // - pattern: The regular expression pattern used for matching.
-   
-       // Additionally, it has a dynamic 'type' attribute that can be used to validate the type of the matched text.
-       // You can access it as: model.type
-       // The 'type' attribute can be of any data type, and its usage depends on your application's specific needs.
-       // For example, you can use it to assign different types to different patterns and perform type-specific actions.
-       // It provides flexibility in handling matched text based on its type.
-     },
-   );
-   ```
-   Replace the standard `TextField` widget with `RegexPatternTextField`. Set the `onNonMatch` and `onMatch` properties to provide custom logic for handling non-matches and matches, respectively. The `model` object passed to the `onMatch` callback provides information about the matched text, such as the text itself, start and end indices, and the matching pattern.
+Run the following command to fetch the package:
 
-   Define the regex pattern styles using the `regexPatternStyles` property. It expects a list of `RegexPatternTextStyle` objects, where each object contains a regular expression pattern (`regexPattern`) and a text style (`textStyle`) to be applied to the matched text. The `regexPattern` should be a valid regex pattern string.
+```bash
+flutter pub get
+```
 
-   You can also customize the appearance and behavior of the `RegexPatternTextField` using its various properties, such as `decoration`, `keyboardType`, `textInputAction`, etc.
+### Import the Package
+
+```dart
+import 'package:regex_pattern_text_field/regex_pattern_text_field.dart';
+```
+
+---
+
+## How to Use
+
+### Basic Example
+
+Replace your standard `TextField` with the `RegexPatternTextField`. Define patterns and styles using `RegexPatternTextStyle`.
+
+```dart
+RegexPatternTextField(
+  maxLines: null,
+  regexPatternController: _controller,
+  onChanged: (matches, text) {
+    print("Text changed: $text");
+  },
+  onSubmitted: (matches, text) {
+    print("Text submitted: $text");
+  },
+  defaultRegexPatternStyles: true,
+  regexPatternStyles: [
+    RegexPatternTextStyle(
+      type: "email",
+      regexPattern: r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
+      textStyle: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+    ),
+    RegexPatternTextStyle(
+      type: "hashtag",
+      regexPattern: r"#\w+",
+      textStyle: const TextStyle(color: Colors.green, fontStyle: FontStyle.italic),
+    ),
+  ],
+  onMatch: (model) {
+    print("Matched pattern: ${model.type}, Text: ${model.text}");
+  },
+  onNonMatch: (text) {
+    print("No match for: $text");
+  },
+);
+```
+
+---
+
+## Callbacks
+
+### `onMatch`
+Triggered when a regex pattern matches a part of the text. Provides detailed information about the match.
+
+### `onNonMatch`
+Called when no pattern matches the text.
+
+### `onChanged`
+Executes every time the text changes, providing real-time feedback.
+
+### `onSubmitted`
+Invoked when the user submits the text (e.g., pressing Enter).
+
+---
 
 ## Customization
 
-The `RegexPatternTextEditingController` provides the following customization options:
+### Add New Patterns
 
-- `setOnMatch`: Set a callback function that will be called when a pattern match occurs. Pass a function that takes a `RegexPatternMatchedText` object as a parameter. This object contains details about the matched text, such as the text itself, start and end indices, and the matching pattern.
+Define additional patterns dynamically:
 
-- `setOnNonMatch`: Set a callback function that will be called when a non-match occurs. Pass a function that takes a `String` parameter representing the non-matched text.
+```dart
+RegexPatternTextStyle(
+  type: "customPattern",
+  regexPattern: r"\d{4}-\d{2}-\d{2}", // Matches dates in YYYY-MM-DD format
+  textStyle: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+);
+```
 
-- `setRegexPatternStyle`: Set the regex pattern styles using a list of `Regex
+### Combine Default and Custom Styles
 
-## Example
+Enable default styles while adding custom ones:
 
-Here's an example of how to use the `RegexPatternTextField`:
+```dart
+RegexPatternTextField(
+  defaultRegexPatternStyles: true,
+  regexPatternStyles: [
+    // Add custom styles here
+  ],
+);
+```
+
+---
+
+## Example Application
+
+Here's a complete example:
 
 ```dart
 import 'package:flutter/material.dart';
 import 'package:regex_pattern_text_field/regex_pattern_text_field.dart';
 
 void main() {
-   runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-   const MyApp({super.key});
+  const MyApp({super.key});
 
-   @override
-   Widget build(BuildContext context) {
-      return const MaterialApp(
-         debugShowCheckedModeBanner: false,
-         home: HomePage(),
-      );
-   }
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: RegexPatternDemo(),
+    );
+  }
 }
 
-class HomePage extends StatefulWidget {
-   const HomePage({Key? key}) : super(key: key);
+class RegexPatternDemo extends StatefulWidget {
+  const RegexPatternDemo({Key? key}) : super(key: key);
 
-   @override
-   State<HomePage> createState() => _HomePageState();
+  @override
+  State<RegexPatternDemo> createState() => _RegexPatternDemoState();
 }
 
-class _HomePageState extends State<HomePage> {
-   final RegexPatternTextEditingController _controller = RegexPatternTextEditingController();
+class _RegexPatternDemoState extends State<RegexPatternDemo> {
+  final RegexPatternTextEditingController _controller = RegexPatternTextEditingController();
+  List<RegexPatternMatched> matches = [];
 
-   List<RegexPatternMatched> allMatches = [];
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {
+        matches = _controller.regexPatternMatchedList;
+      });
+    });
+  }
 
-   @override
-   void initState() {
-      _controller.addListener(() => setState(() => allMatches = _controller.regexPatternMatchedList));
-      // Access allMatches to get the list of RegexPatternMatched using _controller.regexPatternMatchedList
-      super.initState();
-   }
-
-   @override
-   Widget build(BuildContext context) {
-      return Scaffold(
-         appBar: AppBar(
-            title: const Text('Regex Pattern Text Field'),
-         ),
-         body: Center(
-            child: Padding(
-               padding: const EdgeInsets.symmetric(horizontal: 24),
-               child: RegexPatternTextField(
-                  maxLines: null,
-                  regexPatternController: _controller,
-                  // Controller for the text field that will store the user-entered text.
-                  onSubmitted: (List<RegexPatternMatched> matches, String text) {
-                     // Function called when the user submits the text by pressing the "Enter" key or "Submit" button.
-                     // The 'matches' list contains the corresponding regex patterns matched in the entered text.
-                     print(matches);
-                  },
-                  onChanged: (List<RegexPatternMatched> matches, String text) {
-                     // Function called whenever the text in the text field is changed.
-                     // The 'matches' list contains the corresponding regex patterns matched in the updated text.
-                     print(matches);
-                  },
-                  defaultRegexPatternStyles: true,
-                  // Set to 'false' to disable default pattern styles
-                  // Set to 'true' to enable default pattern styles
-                  regexPatternStyles: [
-                     // Defines the styles for different regex patterns to be applied to the matched text.
-                     // Each 'RegexPatternTextStyle' object represents a pattern style.
-                     RegexPatternTextStyle(
-                        type: "github",
-                        regexPattern: RegexPatternHelper.github,
-                        textStyle: const TextStyle(color: Colors.redAccent),
-                     ),
-                     RegexPatternTextStyle(
-                        type: "facebook",
-                        regexPattern: RegexPatternHelper.facebook,
-                        textStyle: const TextStyle(color: Colors.lightGreen),
-                     ),
-                     RegexPatternTextStyle(
-                        type: "twitter",
-                        regexPattern: RegexPatternHelper.twitter,
-                        textStyle: const TextStyle(color: Colors.deepOrangeAccent),
-                     ),
-                     RegexPatternTextStyle(
-                        type: "instagram",
-                        regexPattern: RegexPatternHelper.instagram,
-                        textStyle: const TextStyle(color: Colors.brown),
-                     ),
-                     RegexPatternTextStyle(
-                        type: "phone",
-                        regexPattern: RegexPatternHelper.phone,
-                        textStyle: const TextStyle(color: Colors.amber),
-                     ),
-                     RegexPatternTextStyle(
-                        type: "date",
-                        regexPattern: RegexPatternHelper.dateTime,
-                        textStyle: const TextStyle(color: Colors.red),
-                     ),
-                     RegexPatternTextStyle(
-                        type: "myRegexPattern",
-                        regexPattern: "%+([a-zA-Z]+)",
-                        textStyle: const TextStyle(color: Colors.pink),
-                     ),
-                     // Add more pattern styles as needed
-                  ],
-                  onNonMatch: (String text) {
-                     // Callback for non-matches (when no regex pattern is matched in the text).
-                     // print("Non-match: $text");
-                  },
-                  onMatch: (RegexPatternMatched model) {
-                     // Callback for matches (when a regex pattern is matched in the text).
-                     if (model.type == "myRegexPattern") print("Is my regex pattern");
-                     print("Match text: ${model.text}");
-                     print("type: ${model.type}");
-                     // The 'model' object represents the matched text and its properties.
-                     // It has the following attributes:
-                     // - text: The matched text string.
-                     // - start: The starting index of the matched text within the entered text.
-                     // - end: The ending index of the matched text within the entered text.
-                     // - pattern: The regular expression pattern used for matching.
-
-                     // Additionally, it has a dynamic 'type' attribute that can be used to validate the type of the matched text.
-                     // You can access it as: model.type
-                     // The 'type' attribute can be of any data type, and its usage depends on your application's specific needs.
-                     // For example, you can use it to assign different types to different patterns and perform type-specific actions.
-                     // It provides flexibility in handling matched text based on its type.
-                  },
-               ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Regex Pattern Text Field'),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: RegexPatternTextField(
+              maxLines: null,
+              regexPatternController: _controller,
+              onChanged: (matches, text) => debugPrint("Text changed: $text"),
+              regexPatternStyles: [
+                RegexPatternTextStyle(
+                  type: "email",
+                  regexPattern: r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
+                  textStyle: const TextStyle(color: Colors.blue),
+                ),
+              ],
             ),
-         ),
-      );
-   }
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: matches.length,
+              itemBuilder: (context, index) {
+                final match = matches[index];
+                return ListTile(
+                  title: Text("Matched Text: ${match.text}"),
+                  subtitle: Text("Type: ${match.type}"),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 ```
 
-In this example, we have a `HomePage` widget that uses the `RegexPatternTextField` widget. The `RegexPatternTextField` widget is wrapped in a `Center` widget and placed in the body of the `Scaffold`.
+---
 
-The `RegexPatternTextField` widget has two callback functions: `onNonMatch` and `onMatch`. When a non-match occurs, the `onNonMatch` function is called with the non-matched text as a parameter. Similarly, when a match occurs, the `onMatch` function is called with a `RegexPatternMatchedText` object containing details about the matched text.
+## Contributions
 
-In this example, we simply print the non-matched and matched texts to the console. However, you can customize these functions to perform any desired actions based on the pattern matches and non-matches.
+Contributions are welcome! Feel free to open issues or submit pull requests on [GitHub](https://github.com/pablostefan/regex_pattern_text_field).
 
-The `MyApp` widget is the root widget of the application and sets the `HomePage` as the home screen of the app.
+---
 
-Please note that you will need to import the necessary packages and ensure that the `regex_pattern_text_field` package is added to your `pubspec.yaml` file for this code to work correctly.
+## License
 
-Here's the code with additional comments to provide more clarity:
+This project is licensed under the MIT License. See the `LICENSE` file for details.

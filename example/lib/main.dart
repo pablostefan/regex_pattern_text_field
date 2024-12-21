@@ -52,12 +52,10 @@ class _HomePageState extends State<HomePage> {
             onSubmitted: (List<RegexPatternMatched> matches, String text) {
               // Function called when the user submits the text by pressing the "Enter" key or "Submit" button.
               // The 'matches' list contains the corresponding regex patterns matched in the entered text.
-              print(matches);
             },
             onChanged: (List<RegexPatternMatched> matches, String text) {
               // Function called whenever the text in the text field is changed.
               // The 'matches' list contains the corresponding regex patterns matched in the updated text.
-              print(matches);
             },
             defaultRegexPatternStyles: true,
             // Set to 'false' to disable default pattern styles

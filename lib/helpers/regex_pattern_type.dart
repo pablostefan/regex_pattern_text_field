@@ -14,8 +14,6 @@ extension RegexPatternTypeExtension on RegexPatternType {
         return RegexPatternHelper.mention;
       case RegexPatternType.email:
         return RegexPatternHelper.email;
-      default:
-        return "";
     }
   }
 
@@ -29,8 +27,6 @@ extension RegexPatternTypeExtension on RegexPatternType {
         return const TextStyle(color: Colors.cyan, fontWeight: FontWeight.bold);
       case RegexPatternType.email:
         return const TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold);
-      default:
-        return const TextStyle();
     }
   }
 }
