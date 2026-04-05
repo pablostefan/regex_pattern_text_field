@@ -8,7 +8,7 @@
     - styled text segment rendering
     - widget aggregate callbacks (`onChanged`, `onSubmitted`)
 - Planning artifacts for upgrade and release governance under:
-    - `docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/`
+    - `doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/`
 
 ### Changed
 - Upgraded package constraints to modern stable-compatible tooling:

@@ -41,12 +41,12 @@ pre_mortem:
 implementation_specification:
   code_structure: >-
     Keep current package structure under lib/ and example/ while adding planning artifacts under
-    docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/. Implementation changes
+    doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/. Implementation changes
     remain additive/deprecation-first and follow existing public export surfaces.
   affected_areas:
-    - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/plan.yaml
-    - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/
-    - docs/PRD.yaml
+    - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/plan.yaml
+    - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/
+    - doc/PRD.yaml
     - pubspec.yaml
     - example/pubspec.yaml
     - analysis_options.yaml
@@ -61,13 +61,13 @@ implementation_specification:
     - component: Research Baseline Pack
       responsibility: Generate authoritative compatibility, behavior, and profiling artifacts used by all downstream tasks.
       interfaces:
-        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
-        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
-        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
+        - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+        - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
+        - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
     - component: Decision Gate
       responsibility: Lock minimum Flutter/Dart baseline, release strategy, and optimization go/no-go criteria.
       interfaces:
-        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+        - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
     - component: Tooling and API Modernization
       responsibility: Apply locked tooling updates, deprecation remediation, and typed API migration-safe changes.
       interfaces:
@@ -76,7 +76,7 @@ implementation_specification:
     - component: Conditional Performance Track
       responsibility: Apply performance refactor only when profile baseline proves measurable bottleneck.
       interfaces:
-        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
+        - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
         - Updated hot-path code only when go condition is true
     - component: Quality and Release Gate
       responsibility: Validate behavior and publish migration-ready docs after implementation.
@@ -105,21 +105,21 @@ contracts:
     to_task: TASK-002
     interface: Compatibility checklist, regression corpus, and profile baseline artifacts.
     format: |
-      - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
-      - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
-      - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
+      - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+      - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
+      - doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
   - from_task: TASK-002
     to_task: TASK-003
     interface: Locked minimum Flutter/Dart baseline and release strategy.
-    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+    format: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
   - from_task: TASK-002
     to_task: TASK-004
     interface: Locked API compatibility and deprecation policy constraints.
-    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+    format: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
   - from_task: TASK-002
     to_task: TASK-005
     interface: Profile-first optimization threshold and go/no-go condition.
-    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+    format: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
   - from_task: TASK-003
     to_task: TASK-004
     interface: Upgraded tooling/analyzer baseline ready for typed API hardening.
@@ -127,7 +127,7 @@ contracts:
   - from_task: TASK-001
     to_task: TASK-004
     interface: Backward-compatibility checklist for legacy API usage.
-    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+    format: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
   - from_task: TASK-004
     to_task: TASK-006
     interface: Final typed API contracts and migration-safe call patterns.
@@ -135,7 +135,7 @@ contracts:
   - from_task: TASK-005
     to_task: TASK-006
     interface: Performance decision outcome (optimized or explicitly skipped) and rationale.
-    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
+    format: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
 
 tasks:
   - id: TASK-001
@@ -198,11 +198,11 @@ tasks:
       - TASK-001
     conflicts_with: []
     context_files:
-      - path: docs/PRD.yaml
+      - path: doc/PRD.yaml
         description: Source of scope and acceptance criteria.
-      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+      - path: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
         description: Compatibility evidence.
-      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
+      - path: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
         description: Profiling evidence for optimization decision.
     planning_history:
       - pass: 2
@@ -298,7 +298,7 @@ tasks:
         description: Public style metadata typing.
       - path: lib/widgets/regex_pattern_text_field.dart
         description: Callback type contracts.
-      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+      - path: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
         description: Backward-compatibility constraints.
     planning_history:
       - pass: 2
@@ -341,9 +341,9 @@ tasks:
       - TASK-004
     conflicts_with: []
     context_files:
-      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
+      - path: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
         description: Measured baseline profile evidence.
-      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+      - path: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
         description: Optimization go/no-go criteria.
       - path: lib/controllers/regex_pattern_text_editing_controller.dart
         description: Potential hot-path optimization area.
@@ -396,7 +396,7 @@ tasks:
         description: Migration guidance.
       - path: CHANGELOG.md
         description: Release notes and deprecation window.
-      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
+      - path: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
         description: Canonical behavioral scenarios.
     planning_history:
       - pass: 2
@@ -444,7 +444,7 @@ tasks:
         description: Final API and behavior implementation.
       - path: test/
         description: Regression and compatibility coverage.
-      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
+      - path: doc/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
         description: Conditional optimization outcome.
       - path: README.md
         description: Final migration guidance.
