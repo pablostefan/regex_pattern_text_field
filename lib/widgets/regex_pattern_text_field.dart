@@ -7,12 +7,20 @@ import 'package:regex_pattern_text_field/controllers/regex_pattern_text_editing_
 import 'package:regex_pattern_text_field/models/regex_pattern_matched.dart';
 import 'package:regex_pattern_text_field/models/regex_pattern_text_style.dart';
 
+typedef RegexPatternMatchCallback =
+    void Function(RegexPatternMatched<Object?> model);
+typedef RegexPatternAggregateCallback =
+    void Function(
+      List<RegexPatternMatched<Object?>> regexPatternMatchedList,
+      String text,
+    );
+
 class RegexPatternTextField extends StatefulWidget {
   final Object groupId;
   final bool defaultRegexPatternStyles;
-  final List<RegexPatternTextStyle>? regexPatternStyles;
-  final Function(RegexPatternMatched model)? onMatch;
-  final Function(String text)? onNonMatch;
+  final List<RegexPatternTextStyle<Object?>>? regexPatternStyles;
+  final RegexPatternMatchCallback? onMatch;
+  final ValueChanged<String>? onNonMatch;
   final RegexPatternTextEditingController? regexPatternController;
   final FocusNode? focusNode;
   final InputDecoration decoration;
@@ -38,9 +46,9 @@ class RegexPatternTextField extends StatefulWidget {
   final bool expands;
   final int? maxLength;
   final MaxLengthEnforcement? maxLengthEnforcement;
-  final Function(List<RegexPatternMatched> regexPatternMatchedList, String text)? onChanged;
+  final RegexPatternAggregateCallback? onChanged;
   final VoidCallback? onEditingComplete;
-  final Function(List<RegexPatternMatched> regexPatternMatchedList, String text)? onSubmitted;
+  final RegexPatternAggregateCallback? onSubmitted;
   final AppPrivateCommandCallback? onAppPrivateCommand;
   final List<TextInputFormatter>? inputFormatters;
   final bool? enabled;
@@ -70,14 +78,13 @@ class RegexPatternTextField extends StatefulWidget {
   final EditableTextContextMenuBuilder? contextMenuBuilder;
   final TextMagnifierConfiguration? magnifierConfiguration;
   final TapRegionCallback? onTapOutside;
-  final bool scribbleEnabled;
   final SpellCheckConfiguration? spellCheckConfiguration;
   final UndoHistoryController? undoController;
-  final ToolbarOptions? toolbarOptions;
-  final MaterialStatesController? statesController;
+  final WidgetStatesController? statesController;
   final bool? ignorePointers;
   final Color? cursorErrorColor;
   final bool onTapAlwaysCalled;
+  final bool stylusHandwritingEnabled;
 
   const RegexPatternTextField({
     super.key,
@@ -93,7 +100,6 @@ class RegexPatternTextField extends StatefulWidget {
     this.textAlignVertical,
     this.textDirection,
     this.readOnly = false,
-    this.toolbarOptions,
     this.showCursor,
     this.autofocus = false,
     this.statesController,
@@ -136,7 +142,7 @@ class RegexPatternTextField extends StatefulWidget {
     this.contentInsertionConfiguration,
     this.clipBehavior = Clip.hardEdge,
     this.restorationId,
-    this.scribbleEnabled = true,
+    this.stylusHandwritingEnabled = true,
     this.enableIMEPersonalizedLearning = true,
     this.contextMenuBuilder = _defaultContextMenuBuilder,
     this.canRequestFocus = true,
@@ -153,8 +159,13 @@ class RegexPatternTextField extends StatefulWidget {
     this.enableInteractiveSelection,
   });
 
-  static Widget _defaultContextMenuBuilder(BuildContext context, EditableTextState editableTextState) {
-    return AdaptiveTextSelectionToolbar.editableText(editableTextState: editableTextState);
+  static Widget _defaultContextMenuBuilder(
+    BuildContext context,
+    EditableTextState editableTextState,
+  ) {
+    return AdaptiveTextSelectionToolbar.editableText(
+      editableTextState: editableTextState,
+    );
   }
 
   @override
@@ -167,78 +178,90 @@ class _RegexPatternTextFieldState extends State<RegexPatternTextField> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.regexPatternController ?? RegexPatternTextEditingController();
-    _controller.setRegexPatternStyle(widget.regexPatternStyles, widget.defaultRegexPatternStyles);
+    _controller =
+        widget.regexPatternController ?? RegexPatternTextEditingController();
+    _controller.setRegexPatternStyle(
+      widget.regexPatternStyles,
+      widget.defaultRegexPatternStyles,
+    );
     _controller.setOnMatch(widget.onMatch);
     _controller.setOnNonMatch(widget.onNonMatch);
   }
 
-  void _regexPatternOnChange(String text) => widget.onChanged?.call(_controller.regexPatternMatchedList, text);
+  void _regexPatternOnChange(String text) =>
+      widget.onChanged?.call(_controller.regexPatternMatchedList, text);
 
-  void _regexPatternOnSubmitted(String text) => widget.onSubmitted?.call(_controller.regexPatternMatchedList, text);
+  void _regexPatternOnSubmitted(String text) =>
+      widget.onSubmitted?.call(_controller.regexPatternMatchedList, text);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-        controller: _controller,
-        canRequestFocus: widget.canRequestFocus,
-        clipBehavior: widget.clipBehavior,
-        contentInsertionConfiguration: widget.contentInsertionConfiguration,
-        contextMenuBuilder: widget.contextMenuBuilder,
-        dragStartBehavior: widget.dragStartBehavior,
-        inputFormatters: widget.inputFormatters,
-        magnifierConfiguration: widget.magnifierConfiguration,
-        onAppPrivateCommand: widget.onAppPrivateCommand,
-        onChanged: _regexPatternOnChange,
-        onTapOutside: widget.onTapOutside,
-        restorationId: widget.restorationId,
-        scribbleEnabled: widget.scribbleEnabled,
-        spellCheckConfiguration: widget.spellCheckConfiguration,
-        undoController: widget.undoController,
-        enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
-        textAlignVertical: widget.textAlignVertical,
-        obscureText: widget.obscureText,
-        obscuringCharacter: widget.obscuringCharacter,
-        smartDashesType: widget.smartDashesType,
-        smartQuotesType: widget.smartQuotesType,
-        strutStyle: widget.strutStyle,
-        selectionControls: widget.selectionControls,
-        mouseCursor: widget.mouseCursor,
-        cursorOpacityAnimates: widget.cursorOpacityAnimates,
-        cursorHeight: widget.cursorHeight,
-        selectionHeightStyle: widget.selectionHeightStyle,
-        selectionWidthStyle: widget.selectionWidthStyle,
-        maxLines: widget.maxLines,
-        minLines: widget.minLines,
-        maxLength: widget.maxLength,
-        focusNode: widget.focusNode,
-        keyboardType: widget.keyboardType,
-        keyboardAppearance: widget.keyboardAppearance,
-        textInputAction: widget.textInputAction,
-        textCapitalization: widget.textCapitalization,
-        style: widget.style,
-        textAlign: widget.textAlign,
-        textDirection: widget.textDirection,
-        readOnly: widget.readOnly,
-        showCursor: widget.showCursor,
-        autofocus: widget.autofocus,
-        autocorrect: widget.autocorrect,
-        maxLengthEnforcement: widget.maxLengthEnforcement,
-        cursorColor: widget.cursorColor,
-        cursorRadius: widget.cursorRadius,
-        cursorWidth: widget.cursorWidth,
-        buildCounter: widget.buildCounter,
-        autofillHints: widget.autofillHints,
-        decoration: widget.decoration,
-        expands: widget.expands,
-        onEditingComplete: widget.onEditingComplete,
-        onTap: widget.onTap,
-        onSubmitted: _regexPatternOnSubmitted,
-        enabled: widget.enabled,
-        enableInteractiveSelection: widget.enableInteractiveSelection,
-        enableSuggestions: widget.enableSuggestions,
-        scrollController: widget.scrollController,
-        scrollPadding: widget.scrollPadding,
-        scrollPhysics: widget.scrollPhysics);
+      groupId: widget.groupId,
+      controller: _controller,
+      canRequestFocus: widget.canRequestFocus,
+      clipBehavior: widget.clipBehavior,
+      contentInsertionConfiguration: widget.contentInsertionConfiguration,
+      contextMenuBuilder: widget.contextMenuBuilder,
+      dragStartBehavior: widget.dragStartBehavior,
+      inputFormatters: widget.inputFormatters,
+      magnifierConfiguration: widget.magnifierConfiguration,
+      onAppPrivateCommand: widget.onAppPrivateCommand,
+      onChanged: _regexPatternOnChange,
+      onTapOutside: widget.onTapOutside,
+      restorationId: widget.restorationId,
+      stylusHandwritingEnabled: widget.stylusHandwritingEnabled,
+      spellCheckConfiguration: widget.spellCheckConfiguration,
+      undoController: widget.undoController,
+      enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
+      textAlignVertical: widget.textAlignVertical,
+      obscureText: widget.obscureText,
+      obscuringCharacter: widget.obscuringCharacter,
+      smartDashesType: widget.smartDashesType,
+      smartQuotesType: widget.smartQuotesType,
+      strutStyle: widget.strutStyle,
+      selectionControls: widget.selectionControls,
+      mouseCursor: widget.mouseCursor,
+      cursorOpacityAnimates: widget.cursorOpacityAnimates,
+      cursorHeight: widget.cursorHeight,
+      selectionHeightStyle: widget.selectionHeightStyle,
+      selectionWidthStyle: widget.selectionWidthStyle,
+      maxLines: widget.maxLines,
+      minLines: widget.minLines,
+      maxLength: widget.maxLength,
+      focusNode: widget.focusNode,
+      keyboardType: widget.keyboardType,
+      keyboardAppearance: widget.keyboardAppearance,
+      textInputAction: widget.textInputAction,
+      textCapitalization: widget.textCapitalization,
+      style: widget.style,
+      textAlign: widget.textAlign,
+      textDirection: widget.textDirection,
+      readOnly: widget.readOnly,
+      showCursor: widget.showCursor,
+      autofocus: widget.autofocus,
+      autocorrect: widget.autocorrect,
+      maxLengthEnforcement: widget.maxLengthEnforcement,
+      cursorColor: widget.cursorColor,
+      cursorRadius: widget.cursorRadius,
+      cursorWidth: widget.cursorWidth,
+      buildCounter: widget.buildCounter,
+      autofillHints: widget.autofillHints,
+      decoration: widget.decoration,
+      expands: widget.expands,
+      onEditingComplete: widget.onEditingComplete,
+      onTap: widget.onTap,
+      onSubmitted: _regexPatternOnSubmitted,
+      enabled: widget.enabled,
+      enableInteractiveSelection: widget.enableInteractiveSelection,
+      enableSuggestions: widget.enableSuggestions,
+      scrollController: widget.scrollController,
+      scrollPadding: widget.scrollPadding,
+      scrollPhysics: widget.scrollPhysics,
+      statesController: widget.statesController,
+      ignorePointers: widget.ignorePointers,
+      cursorErrorColor: widget.cursorErrorColor,
+      onTapAlwaysCalled: widget.onTapAlwaysCalled,
+    );
   }
 }

@@ -1,11 +1,13 @@
 name: regex_pattern_text_field
 description: A custom text editing controller that applies styles to matched patterns in a text field.
-version: 1.0.10
+version: 1.1.0
 homepage: https://github.com/pablostefan/regex_pattern_text_field
+repository: https://github.com/pablostefan/regex_pattern_text_field
+issue_tracker: https://github.com/pablostefan/regex_pattern_text_field/issues
 
 environment:
-  sdk: '>=3.0.1 <4.0.0'
-  flutter: ">=1.17.0"
+  sdk: '>=3.8.0 <4.0.0'
+  flutter: ">=3.35.0"
 
 dependencies:
   flutter:
@@ -14,7 +16,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true

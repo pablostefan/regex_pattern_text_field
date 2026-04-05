@@ -1,224 +1,288 @@
 # Regex Pattern Text Field
 
-The `RegexPatternTextField` is a powerful Flutter widget that simplifies working with pattern matching and applying styles to matched text in a text field. This widget is especially useful for highlighting patterns like URLs, emails, hashtags, mentions, and more.
+<p align="left">
+  <a href="https://github.com/pablostefan/regex_pattern_text_field/actions/workflows/ci.yml"><img src="https://github.com/pablostefan/regex_pattern_text_field/actions/workflows/ci.yml/badge.svg" alt="ci"></a>
+  <a href="https://pub.dev/packages/regex_pattern_text_field"><img src="https://img.shields.io/pub/v/regex_pattern_text_field.svg" alt="pub version"></a>
+  <a href="https://pub.dev/packages/regex_pattern_text_field"><img src="https://img.shields.io/pub/likes/regex_pattern_text_field" alt="pub likes"></a>
+  <a href="https://pub.dev/packages/regex_pattern_text_field"><img src="https://img.shields.io/pub/points/regex_pattern_text_field" alt="pub points"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license"></a>
+</p>
+
+Highlight regex matches while the user types, using a widget that feels like a regular `TextField`.
+
+`RegexPatternTextField` is designed for mentions, hashtags, URLs, emails, custom tokens, and any pattern-driven input experience.
+
+Destaque regex em tempo real enquanto o usuário digita, usando um widget com experiência de `TextField` nativo.
+
+`RegexPatternTextField` foi criado para @mentions, #hashtags, URLs, e-mails, tokens customizados e qualquer fluxo baseado em padrões.
 
 ![regex_pattern_text_field](readme_contents/regex_pattern_text_field_image.png)
 
----
+## Table of Contents
 
-## Features
+- [English](#english)
+- [Português (Brasil)](#português-brasil)
 
-- **Pattern Matching**: Recognize and style text based on predefined or custom regex patterns.
-- **Customizable Styles**: Apply unique text styles for each matched pattern.
-- **Real-Time Updates**: Monitor and react to changes in the input dynamically.
-- **Extensibility**: Easily add new regex patterns and their corresponding styles.
+## English
 
----
+### Highlights
 
-## Getting Started
+- Real-time highlight with regex pattern styles.
+- Typed metadata per pattern using `RegexPatternTextStyle<T>`.
+- Match callbacks for domain behavior (mentions, validation, chips, automation).
+- Built-in default pattern set + custom patterns.
+- Drop-in usage with familiar Flutter `TextField` API.
+
+### Compatibility
+
+- Dart: `>=3.8.0 <4.0.0`
+- Flutter: `>=3.35.0`
 
 ### Installation
 
-Add the package to your `pubspec.yaml` file:
-
 ```yaml
 dependencies:
-  regex_pattern_text_field: ^1.0.0
+  regex_pattern_text_field: ^1.1.0
 ```
-
-Run the following command to fetch the package:
 
 ```bash
 flutter pub get
 ```
 
-### Import the Package
+### Import
 
 ```dart
 import 'package:regex_pattern_text_field/regex_pattern_text_field.dart';
 ```
 
----
-
-## How to Use
-
-### Basic Example
-
-Replace your standard `TextField` with the `RegexPatternTextField`. Define patterns and styles using `RegexPatternTextStyle`.
+### Quick Start
 
 ```dart
+final controller = RegexPatternTextEditingController();
+
 RegexPatternTextField(
+  regexPatternController: controller,
   maxLines: null,
-  regexPatternController: _controller,
-  onChanged: (matches, text) {
-    print("Text changed: $text");
-  },
-  onSubmitted: (matches, text) {
-    print("Text submitted: $text");
-  },
   defaultRegexPatternStyles: true,
-  regexPatternStyles: [
-    RegexPatternTextStyle(
-      type: "email",
-      regexPattern: r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
-      textStyle: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
-    ),
-    RegexPatternTextStyle(
-      type: "hashtag",
-      regexPattern: r"#\w+",
-      textStyle: const TextStyle(color: Colors.green, fontStyle: FontStyle.italic),
+  regexPatternStyles: const [
+    RegexPatternTextStyle<String>(
+      type: 'custom',
+      regexPattern: r'%+([a-zA-Z]+)',
+      textStyle: TextStyle(color: Colors.pink),
     ),
   ],
   onMatch: (model) {
-    print("Matched pattern: ${model.type}, Text: ${model.text}");
+    debugPrint('match: ${model.text} | type: ${model.type}');
   },
-  onNonMatch: (text) {
-    print("No match for: $text");
+  onNonMatch: (token) {
+    debugPrint('non-match token: $token');
+  },
+  onChanged: (matches, text) {
+    debugPrint('text: ${text.length} chars | matches: ${matches.length}');
   },
 );
 ```
 
----
+### Main API
 
-## Callbacks
+| API | Description |
+|---|---|
+| `RegexPatternTextField` | Text input with inline regex highlighting |
+| `RegexPatternTextEditingController` | Controller exposing `regexPatternMatchedList` |
+| `RegexPatternTextStyle<T>` | Pattern + style + typed metadata |
+| `RegexPatternMatched<T>` | Match payload from callbacks |
 
-### `onMatch`
-Triggered when a regex pattern matches a part of the text. Provides detailed information about the match.
-
-### `onNonMatch`
-Called when no pattern matches the text.
-
-### `onChanged`
-Executes every time the text changes, providing real-time feedback.
-
-### `onSubmitted`
-Invoked when the user submits the text (e.g., pressing Enter).
-
----
-
-## Customization
-
-### Add New Patterns
-
-Define additional patterns dynamically:
+#### `RegexPatternTextStyle<T>`
 
 ```dart
-RegexPatternTextStyle(
-  type: "customPattern",
-  regexPattern: r"\d{4}-\d{2}-\d{2}", // Matches dates in YYYY-MM-DD format
-  textStyle: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
-);
+const RegexPatternTextStyle<String>(
+  type: 'ticket',
+  regexPattern: r'#[0-9]+',
+  textStyle: TextStyle(fontWeight: FontWeight.bold),
+  caseSensitive: false,
+  multiLine: true,
+)
 ```
 
-### Combine Default and Custom Styles
+#### `RegexPatternMatched<T>` fields
 
-Enable default styles while adding custom ones:
+- `text`: matched text
+- `start`: start index
+- `end`: end index
+- `pattern`: regex used by the matcher
+- `type`: typed metadata from your style
 
-```dart
-RegexPatternTextField(
-  defaultRegexPatternStyles: true,
-  regexPatternStyles: [
-    // Add custom styles here
-  ],
-);
+### Default Pattern Set
+
+When `defaultRegexPatternStyles` is `true`, the package includes:
+
+- `email`
+- `url`
+- `hashtag`
+- `mention`
+
+You can combine defaults and your custom styles in the same field.
+
+### Callback Signatures
+
+- `onMatch(RegexPatternMatched<Object?> model)`
+- `onNonMatch(String token)`
+- `onChanged(List<RegexPatternMatched<Object?>> matches, String text)`
+- `onSubmitted(List<RegexPatternMatched<Object?>> matches, String text)`
+
+### Example App
+
+```bash
+cd example
+flutter run
 ```
 
----
+The demo includes:
 
-## Example Application
+- typed custom patterns
+- default + custom pattern composition
+- real-time match list and callback state
 
-Here's a complete example:
+### Testing
+
+```bash
+flutter test
+```
+
+The suite covers controller behavior, helper matching rules, and widget callback flow.
+
+### Contributing
+
+Issues and pull requests are welcome:
+
+- https://github.com/pablostefan/regex_pattern_text_field
+
+### License
+
+MIT. See [LICENSE](LICENSE).
+
+## Português (Brasil)
+
+### Destaques
+
+- Destaque em tempo real com estilos por regex.
+- Metadados tipados por padrão com `RegexPatternTextStyle<T>`.
+- Callbacks de match para regras de domínio (mentions, validações, chips, automações).
+- Conjunto padrão de padrões + padrões customizados.
+- Uso simples, mantendo a experiência de um `TextField` do Flutter.
+
+### Compatibilidade
+
+- Dart: `>=3.8.0 <4.0.0`
+- Flutter: `>=3.35.0`
+
+### Instalação
+
+```yaml
+dependencies:
+  regex_pattern_text_field: ^1.1.0
+```
+
+```bash
+flutter pub get
+```
+
+### Importação
 
 ```dart
-import 'package:flutter/material.dart';
 import 'package:regex_pattern_text_field/regex_pattern_text_field.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: RegexPatternDemo(),
-    );
-  }
-}
-
-class RegexPatternDemo extends StatefulWidget {
-  const RegexPatternDemo({Key? key}) : super(key: key);
-
-  @override
-  State<RegexPatternDemo> createState() => _RegexPatternDemoState();
-}
-
-class _RegexPatternDemoState extends State<RegexPatternDemo> {
-  final RegexPatternTextEditingController _controller = RegexPatternTextEditingController();
-  List<RegexPatternMatched> matches = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      setState(() {
-        matches = _controller.regexPatternMatchedList;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Regex Pattern Text Field'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: RegexPatternTextField(
-              maxLines: null,
-              regexPatternController: _controller,
-              onChanged: (matches, text) => debugPrint("Text changed: $text"),
-              regexPatternStyles: [
-                RegexPatternTextStyle(
-                  type: "email",
-                  regexPattern: r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
-                  textStyle: const TextStyle(color: Colors.blue),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: matches.length,
-              itemBuilder: (context, index) {
-                final match = matches[index];
-                return ListTile(
-                  title: Text("Matched Text: ${match.text}"),
-                  subtitle: Text("Type: ${match.type}"),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 ```
 
----
+### Início rápido
 
-## Contributions
+```dart
+final controller = RegexPatternTextEditingController();
 
-Contributions are welcome! Feel free to open issues or submit pull requests on [GitHub](https://github.com/pablostefan/regex_pattern_text_field).
+RegexPatternTextField(
+  regexPatternController: controller,
+  maxLines: null,
+  defaultRegexPatternStyles: true,
+  regexPatternStyles: const [
+    RegexPatternTextStyle<String>(
+      type: 'custom',
+      regexPattern: r'%+([a-zA-Z]+)',
+      textStyle: TextStyle(color: Colors.pink),
+    ),
+  ],
+  onMatch: (model) {
+    debugPrint('match: ${model.text} | type: ${model.type}');
+  },
+  onNonMatch: (token) {
+    debugPrint('token sem match: $token');
+  },
+  onChanged: (matches, text) {
+    debugPrint('texto: ${text.length} chars | matches: ${matches.length}');
+  },
+);
+```
 
----
+### API principal
 
-## License
+| API | Descrição |
+|---|---|
+| `RegexPatternTextField` | Campo de texto com destaque inline por regex |
+| `RegexPatternTextEditingController` | Controller com `regexPatternMatchedList` |
+| `RegexPatternTextStyle<T>` | Padrão + estilo + metadado tipado |
+| `RegexPatternMatched<T>` | Payload de match nos callbacks |
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+#### Campos de `RegexPatternMatched<T>`
+
+- `text`: texto encontrado
+- `start`: índice inicial
+- `end`: índice final
+- `pattern`: regex usada no matcher
+- `type`: metadado tipado definido no estilo
+
+### Padrões padrão
+
+Com `defaultRegexPatternStyles: true`, a lib inclui:
+
+- `email`
+- `url`
+- `hashtag`
+- `mention`
+
+Você pode combinar padrões padrão com estilos customizados.
+
+### Assinaturas de callbacks
+
+- `onMatch(RegexPatternMatched<Object?> model)`
+- `onNonMatch(String token)`
+- `onChanged(List<RegexPatternMatched<Object?>> matches, String text)`
+- `onSubmitted(List<RegexPatternMatched<Object?>> matches, String text)`
+
+### App de exemplo
+
+```bash
+cd example
+flutter run
+```
+
+O demo inclui:
+
+- padrões customizados tipados
+- composição de padrões padrão + customizados
+- lista de matches em tempo real e estado de callbacks
+
+### Testes
+
+```bash
+flutter test
+```
+
+A suíte cobre comportamento do controller, regras de matching no helper e fluxo de callbacks do widget.
+
+### Contribuição
+
+Issues e pull requests são bem-vindos:
+
+- https://github.com/pablostefan/regex_pattern_text_field
+
+### Licença
+
+MIT. Veja [LICENSE](LICENSE).

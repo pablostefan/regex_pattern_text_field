@@ -1,11 +1,11 @@
-class RegexPatternMatched {
-  final dynamic type;
+class RegexPatternMatched<T> {
+  final T? type;
   final Pattern pattern;
   final String text;
   final int start;
   final int end;
 
-  RegexPatternMatched({
+  const RegexPatternMatched({
     required this.text,
     required this.start,
     required this.end,

@@ -20,13 +20,23 @@ extension RegexPatternTypeExtension on RegexPatternType {
   TextStyle get style {
     switch (this) {
       case RegexPatternType.url:
-        return const TextStyle(color: Colors.blue, decoration: TextDecoration.underline, decorationColor: Colors.blue);
+        return const TextStyle(
+          color: Colors.blue,
+          decoration: TextDecoration.underline,
+          decorationColor: Colors.blue,
+        );
       case RegexPatternType.hashtag:
-        return const TextStyle(color: Colors.blueAccent, fontWeight: FontWeight.bold);
+        return const TextStyle(
+          color: Colors.blueAccent,
+          fontWeight: FontWeight.bold,
+        );
       case RegexPatternType.mention:
         return const TextStyle(color: Colors.cyan, fontWeight: FontWeight.bold);
       case RegexPatternType.email:
-        return const TextStyle(color: Colors.blueGrey, fontWeight: FontWeight.bold);
+        return const TextStyle(
+          color: Colors.blueGrey,
+          fontWeight: FontWeight.bold,
+        );
     }
   }
 }

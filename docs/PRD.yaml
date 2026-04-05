@@ -1,0 +1,68 @@
+prd_id: prd-upgrade-flutter-tooling-2026-04-05
+title: Upgrade Flutter Package Tooling and Improve Code Quality with Minimal API Breakage
+owner: package-maintainers
+status: draft
+last_updated: 2026-04-05
+objective: >-
+  Upgrade this package to current stable Flutter/Dart tooling and improve maintainability,
+  typing, and runtime behavior while keeping public API breakage minimal and providing
+  migration guidance when deprecations are needed.
+
+user_stories:
+  - id: US-001
+    story: >-
+      As a package maintainer, I want the package and example app aligned to latest stable
+      Flutter tooling so CI, local development, and pub publishing remain reliable.
+  - id: US-002
+    story: >-
+      As an integrator, I want existing public APIs to keep working (or be clearly deprecated)
+      so upgrades do not force immediate rewrites.
+  - id: US-003
+    story: >-
+      As a developer using this package, I want stronger typing and better docs so integration
+      is safer and easier.
+  - id: US-004
+    story: >-
+      As a maintainer, I want stronger test coverage and evidence-based performance checks so
+      future changes do not regress behavior.
+
+scope:
+  in_scope:
+    - Run a consolidated research phase and create artifact handoffs (compatibility checklist, regression corpus, profile baseline).
+    - Add a mandatory decision gate after research to lock minimum Flutter/Dart baseline and release strategy.
+    - Update SDK and Flutter environment constraints in root and example pubspec files based on the locked baseline.
+    - Upgrade lints and analysis configuration to current recommended stable set.
+    - Resolve framework/package deprecations in library and example code.
+    - Improve typed APIs for public models/callbacks with minimal breaking changes.
+    - Execute performance optimization only if profile evidence shows a measurable bottleneck.
+    - Add/expand unit and widget tests around matching, callbacks, and rendering behavior.
+    - Update example app to demonstrate recommended usage and migration-safe APIs.
+    - Update README and CHANGELOG with migration notes and deprecation timeline.
+  out_of_scope:
+    - Re-architecting the package into a multi-package monorepo.
+    - Replacing regex matching engine with a different parsing architecture.
+    - Introducing major v2-only API redesign in this effort.
+    - Publishing automation redesign beyond minimal CI/tooling compatibility checks.
+
+acceptance_criteria:
+  - id: AC-001
+    criterion: Root and example environment constraints are updated for the minimum Flutter/Dart baseline locked at the decision gate.
+  - id: AC-002
+    criterion: Lint/analyzer configuration is upgraded and repository passes flutter analyze without new critical issues.
+  - id: AC-003
+    criterion: Public API remains source-compatible where possible; any unavoidable changes are introduced via deprecation first and tied to release strategy.
+  - id: AC-004
+    criterion: Public-facing dynamic types in core API are reduced through typed alternatives with documented migration.
+  - id: AC-005
+    criterion: Performance optimization is only implemented when profiling identifies a measurable bottleneck; otherwise, a documented no-op decision is produced.
+  - id: AC-006
+    criterion: Automated tests cover key matching and callback flows, including non-match scenarios and style application.
+  - id: AC-007
+    criterion: Example app reflects current recommended usage and compiles with upgraded tooling.
+  - id: AC-008
+    criterion: README and CHANGELOG include upgrade notes, compatibility statement, and deprecation/migration guidance.
+  - id: AC-009
+    criterion: Planning artifacts include explicit file-path handoffs for compatibility checklist and regression corpus.
+
+needs_clarification:
+  - None. Baseline and release strategy are resolved through the mandatory post-research decision gate.

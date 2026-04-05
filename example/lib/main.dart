@@ -2,126 +2,225 @@ import 'package:flutter/material.dart';
 import 'package:regex_pattern_text_field/regex_pattern_text_field.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const RegexPatternDemoApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RegexPatternDemoApp extends StatelessWidget {
+  const RegexPatternDemoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      title: 'Regex Pattern Text Field Demo',
+      theme: ThemeData(colorSchemeSeed: Colors.blue, useMaterial3: true),
+      home: const RegexPatternDemoPage(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class RegexPatternDemoPage extends StatefulWidget {
+  const RegexPatternDemoPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<RegexPatternDemoPage> createState() => _RegexPatternDemoPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final RegexPatternTextEditingController _controller = RegexPatternTextEditingController();
+class _RegexPatternDemoPageState extends State<RegexPatternDemoPage> {
+  final RegexPatternTextEditingController _controller =
+      RegexPatternTextEditingController();
 
-  List<RegexPatternMatched> allMatches = [];
+  bool _useDefaultPatterns = true;
+  String _lastEvent = 'Type something to see matches.';
+  List<RegexPatternMatched<Object?>> _matches = const [];
+
+  static const _customStyles = <RegexPatternTextStyle<Object?>>[
+    RegexPatternTextStyle<Object?>(
+      type: 'github',
+      regexPattern: RegexPatternHelper.github,
+      textStyle: TextStyle(color: Colors.redAccent),
+    ),
+    RegexPatternTextStyle<Object?>(
+      type: 'facebook',
+      regexPattern: RegexPatternHelper.facebook,
+      textStyle: TextStyle(color: Colors.lightGreen),
+    ),
+    RegexPatternTextStyle<Object?>(
+      type: 'twitter',
+      regexPattern: RegexPatternHelper.twitter,
+      textStyle: TextStyle(color: Colors.deepOrangeAccent),
+    ),
+    RegexPatternTextStyle<Object?>(
+      type: 'instagram',
+      regexPattern: RegexPatternHelper.instagram,
+      textStyle: TextStyle(color: Colors.brown),
+    ),
+    RegexPatternTextStyle<Object?>(
+      type: 'phone',
+      regexPattern: RegexPatternHelper.phone,
+      textStyle: TextStyle(color: Colors.amber),
+    ),
+    RegexPatternTextStyle<Object?>(
+      type: 'date',
+      regexPattern: RegexPatternHelper.dateTime,
+      textStyle: TextStyle(color: Colors.red),
+    ),
+    RegexPatternTextStyle<Object?>(
+      type: 'myRegexPattern',
+      regexPattern: r'%+([a-zA-Z]+)',
+      textStyle: TextStyle(color: Colors.pink),
+    ),
+  ];
 
   @override
   void initState() {
-    _controller.addListener(() => setState(() => allMatches = _controller.regexPatternMatchedList));
-    // Access allMatches to get the list of RegexPatternMatched using _controller.regexPatternMatchedList
     super.initState();
+    _controller.addListener(_syncMatchesFromController);
+    _controller.text =
+        'Try: #flutter @user user@mail.com https://flutter.dev %token';
+  }
+
+  @override
+  void dispose() {
+    _controller
+      ..removeListener(_syncMatchesFromController)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _syncMatchesFromController() {
+    setState(() {
+      _matches = _controller.regexPatternMatchedList;
+    });
+  }
+
+  void _applyPatternMode(bool enabled) {
+    setState(() {
+      _useDefaultPatterns = enabled;
+      _lastEvent = enabled
+          ? 'Default patterns enabled.'
+          : 'Default patterns disabled.';
+    });
+
+    _controller.setRegexPatternStyle(_customStyles, _useDefaultPatterns);
+    _syncMatchesFromController();
+  }
+
+  void _insertSampleText() {
+    const sample =
+        'Contact @alice via alice@example.com on 08 Jan 2026 and visit https://github.com';
+    _controller.value = _controller.value.copyWith(
+      text: sample,
+      selection: const TextSelection.collapsed(offset: sample.length),
+    );
+  }
+
+  void _clearText() {
+    _controller.clear();
+    setState(() {
+      _lastEvent = 'Input cleared.';
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Regex Pattern Text Field'),
-      ),
-      body: Center(
+      appBar: AppBar(title: const Text('Regex Pattern Text Field Demo')),
+      body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: RegexPatternTextField(
-            maxLines: null,
-            regexPatternController: _controller,
-            // Controller for the text field that will store the user-entered text.
-            onSubmitted: (List<RegexPatternMatched> matches, String text) {
-              // Function called when the user submits the text by pressing the "Enter" key or "Submit" button.
-              // The 'matches' list contains the corresponding regex patterns matched in the entered text.
-            },
-            onChanged: (List<RegexPatternMatched> matches, String text) {
-              // Function called whenever the text in the text field is changed.
-              // The 'matches' list contains the corresponding regex patterns matched in the updated text.
-            },
-            defaultRegexPatternStyles: true,
-            // Set to 'false' to disable default pattern styles
-            // Set to 'true' to enable default pattern styles
-            regexPatternStyles: [
-              // Defines the styles for different regex patterns to be applied to the matched text.
-              // Each 'RegexPatternTextStyle' object represents a pattern style.
-              RegexPatternTextStyle(
-                type: "github",
-                regexPattern: RegexPatternHelper.github,
-                textStyle: const TextStyle(color: Colors.redAccent),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                value: _useDefaultPatterns,
+                onChanged: _applyPatternMode,
+                title: const Text('Use default built-in patterns'),
+                subtitle: const Text('email, url, hashtag, mention'),
               ),
-              RegexPatternTextStyle(
-                type: "facebook",
-                regexPattern: RegexPatternHelper.facebook,
-                textStyle: const TextStyle(color: Colors.lightGreen),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  FilledButton.tonal(
+                    onPressed: _insertSampleText,
+                    child: const Text('Insert sample'),
+                  ),
+                  const SizedBox(width: 8),
+                  OutlinedButton(
+                    onPressed: _clearText,
+                    child: const Text('Clear'),
+                  ),
+                ],
               ),
-              RegexPatternTextStyle(
-                type: "twitter",
-                regexPattern: RegexPatternHelper.twitter,
-                textStyle: const TextStyle(color: Colors.deepOrangeAccent),
+              const SizedBox(height: 12),
+              RegexPatternTextField(
+                maxLines: 5,
+                regexPatternController: _controller,
+                defaultRegexPatternStyles: _useDefaultPatterns,
+                regexPatternStyles: _customStyles,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText:
+                      'Type text with @mentions, #tags, emails, urls and %custom.',
+                ),
+                onChanged: (matches, text) {
+                  setState(() {
+                    _matches = matches;
+                    _lastEvent =
+                        'Changed: ${matches.length} match(es) in ${text.length} chars';
+                  });
+                },
+                onSubmitted: (matches, text) {
+                  setState(() {
+                    _lastEvent =
+                        'Submitted: ${matches.length} match(es) in ${text.length} chars';
+                  });
+                },
+                onMatch: (model) {
+                  setState(() {
+                    _lastEvent =
+                        'Match -> text: "${model.text}", type: ${model.type}';
+                  });
+                },
+                onNonMatch: (text) {
+                  setState(() {
+                    _lastEvent = 'Non-match token: "$text"';
+                  });
+                },
               ),
-              RegexPatternTextStyle(
-                type: "instagram",
-                regexPattern: RegexPatternHelper.instagram,
-                textStyle: const TextStyle(color: Colors.brown),
+              const SizedBox(height: 12),
+              Text(
+                _lastEvent,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-              RegexPatternTextStyle(
-                type: "phone",
-                regexPattern: RegexPatternHelper.phone,
-                textStyle: const TextStyle(color: Colors.amber),
+              const SizedBox(height: 12),
+              Text(
+                'Matches (${_matches.length})',
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-              RegexPatternTextStyle(
-                type: "date",
-                regexPattern: RegexPatternHelper.dateTime,
-                textStyle: const TextStyle(color: Colors.red),
+              const SizedBox(height: 8),
+              Expanded(
+                child: _matches.isEmpty
+                    ? const Center(child: Text('No matches yet.'))
+                    : ListView.separated(
+                        itemCount: _matches.length,
+                        separatorBuilder: (_, _) => const Divider(height: 1),
+                        itemBuilder: (context, index) {
+                          final match = _matches[index];
+                          return ListTile(
+                            dense: true,
+                            title: Text(match.text),
+                            subtitle: Text(
+                              'type: ${match.type} | range: ${match.start}-${match.end}',
+                            ),
+                          );
+                        },
+                      ),
               ),
-              RegexPatternTextStyle(
-                type: "myRegexPattern",
-                regexPattern: "%+([a-zA-Z]+)",
-                textStyle: const TextStyle(color: Colors.pink),
-              ),
-              // Add more pattern styles as needed
             ],
-            onNonMatch: (String text) {
-              // Callback for non-matches (when no regex pattern is matched in the text).
-              print("Non-match: $text");
-            },
-            onMatch: (RegexPatternMatched model) {
-              // Callback for matches (when a regex pattern is matched in the text).
-              if (model.type == "myRegexPattern") print("Is my regex pattern");
-              print("Match text: ${model.text}");
-              print("type: ${model.type}");
-              // The 'model' object represents the matched text and its properties.
-              // It has the following attributes:
-              // - text: The matched text string.
-              // - start: The starting index of the matched text within the entered text.
-              // - end: The ending index of the matched text within the entered text.
-              // - pattern: The regular expression pattern used for matching.
-
-              // Additionally, it has a dynamic 'type' attribute that can be used to validate the type of the matched text.
-              // You can access it as: model.type
-              // The 'type' attribute can be of any data type, and its usage depends on your application's specific needs.
-              // For example, you can use it to assign different types to different patterns and perform type-specific actions.
-              // It provides flexibility in handling matched text based on its type.
-            },
           ),
         ),
       ),

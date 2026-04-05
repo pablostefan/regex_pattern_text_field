@@ -1,3 +1,33 @@
+## [1.1.0] - 2026-04-05
+### Added
+- Typed public model support via generics:
+    - `RegexPatternMatched<T>`
+    - `RegexPatternTextStyle<T>`
+- New root test suite for:
+    - matching and non-matching callback flows
+    - styled text segment rendering
+    - widget aggregate callbacks (`onChanged`, `onSubmitted`)
+- Planning artifacts for upgrade and release governance under:
+    - `docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/`
+
+### Changed
+- Upgraded package constraints to modern stable-compatible tooling:
+    - Dart `>=3.8.0 <4.0.0`
+    - Flutter `>=3.35.0`
+- Upgraded lint package to `flutter_lints: ^6.0.0` in root and example.
+- Strengthened analyzer options with strict typing checks.
+- Improved controller robustness for cursor extraction and empty-pattern handling.
+- Example app updated to typed callback/model usage and analyzer-safe logging.
+
+### Removed
+- `RegexPatternTextField.scribbleEnabled`
+- `RegexPatternTextField.materialStatesController`
+- `RegexPatternTextField.toolbarOptions`
+
+### Notes
+- This is a migration-safe release focused on minimal API breakage.
+- Performance track was intentionally skipped in this cycle because no measurable bottleneck evidence was available.
+
 ## [1.0.0] - First release
     * First release of the project.
 

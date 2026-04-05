@@ -1,0 +1,472 @@
+plan_id: upgrade-flutter-tooling-and-quality-2026-04-05
+objective: Upgrade package tooling to latest stable Flutter/Dart and improve code quality with minimal API breakage.
+created_at: 2026-04-05
+created_by: gem-planner
+status: pending_approval
+research_confidence: medium
+
+plan_metrics:
+  wave_1_task_count: 1
+  total_dependencies: 8
+  risk_score: medium
+
+tldr: |
+  The revised plan starts with one consolidated research pass that produces concrete artifacts,
+  then enforces an explicit decision gate to lock Flutter/Dart minimum baseline and release strategy
+  before implementation. Conflicting implementation work has been sequenced into separate waves,
+  performance work is now profile-first and conditional, and downstream handoffs use explicit artifact paths.
+open_questions:
+  - None. Baseline version and release strategy are explicitly locked in TASK-002 before implementation begins.
+
+pre_mortem:
+  overall_risk_level: medium
+  critical_failure_modes:
+    - scenario: Decision gate is skipped and implementation starts with an ambiguous SDK floor.
+      likelihood: medium
+      impact: critical
+      mitigation: Make TASK-002 a mandatory dependency for all implementation tasks and require a written decision record artifact.
+    - scenario: Typed API hardening introduces subtle source incompatibilities.
+      likelihood: medium
+      impact: high
+      mitigation: Use compatibility checklist artifact and deprecation-first migration path with tests covering legacy usage.
+    - scenario: Performance optimization is applied without a verified bottleneck and causes behavioral drift.
+      likelihood: medium
+      impact: high
+      mitigation: Require profile evidence in TASK-001 and execute TASK-005 code changes only when measurable bottleneck threshold is met.
+  assumptions:
+    - Repository remains a single Flutter package with one example app.
+    - Release strategy can be decided within this plan cycle and documented before code edits.
+    - Regression corpus and compatibility checklist artifacts are treated as required handoff inputs.
+
+implementation_specification:
+  code_structure: >-
+    Keep current package structure under lib/ and example/ while adding planning artifacts under
+    docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/. Implementation changes
+    remain additive/deprecation-first and follow existing public export surfaces.
+  affected_areas:
+    - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/plan.yaml
+    - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/
+    - docs/PRD.yaml
+    - pubspec.yaml
+    - example/pubspec.yaml
+    - analysis_options.yaml
+    - lib/controllers/
+    - lib/widgets/
+    - lib/models/
+    - test/
+    - example/lib/main.dart
+    - README.md
+    - CHANGELOG.md
+  component_details:
+    - component: Research Baseline Pack
+      responsibility: Generate authoritative compatibility, behavior, and profiling artifacts used by all downstream tasks.
+      interfaces:
+        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
+        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
+    - component: Decision Gate
+      responsibility: Lock minimum Flutter/Dart baseline, release strategy, and optimization go/no-go criteria.
+      interfaces:
+        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+    - component: Tooling and API Modernization
+      responsibility: Apply locked tooling updates, deprecation remediation, and typed API migration-safe changes.
+      interfaces:
+        - Root/example pubspec and analyzer settings
+        - Public model and callback signatures with deprecation notes
+    - component: Conditional Performance Track
+      responsibility: Apply performance refactor only when profile baseline proves measurable bottleneck.
+      interfaces:
+        - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
+        - Updated hot-path code only when go condition is true
+    - component: Quality and Release Gate
+      responsibility: Validate behavior and publish migration-ready docs after implementation.
+      interfaces:
+        - test/ suite updates
+        - example/lib/main.dart
+        - README.md
+        - CHANGELOG.md
+  dependencies:
+    - component: Decision Gate
+      relationship: Depends on Research Baseline Pack artifacts.
+    - component: Tooling and API Modernization
+      relationship: Depends on locked decisions from Decision Gate.
+    - component: Conditional Performance Track
+      relationship: Depends on Decision Gate criteria and modernized API/tooling baseline.
+    - component: Quality and Release Gate
+      relationship: Depends on completion (or explicit skip decision) of conditional performance track.
+  integration_points:
+    - Export surface in lib/regex_pattern_text_field.dart
+    - Controller behavior in lib/controllers/regex_pattern_text_editing_controller.dart
+    - Widget contracts in lib/widgets/regex_pattern_text_field.dart
+    - Consumer guidance in README.md and example/lib/main.dart
+
+contracts:
+  - from_task: TASK-001
+    to_task: TASK-002
+    interface: Compatibility checklist, regression corpus, and profile baseline artifacts.
+    format: |
+      - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+      - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
+      - docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
+  - from_task: TASK-002
+    to_task: TASK-003
+    interface: Locked minimum Flutter/Dart baseline and release strategy.
+    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+  - from_task: TASK-002
+    to_task: TASK-004
+    interface: Locked API compatibility and deprecation policy constraints.
+    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+  - from_task: TASK-002
+    to_task: TASK-005
+    interface: Profile-first optimization threshold and go/no-go condition.
+    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+  - from_task: TASK-003
+    to_task: TASK-004
+    interface: Upgraded tooling/analyzer baseline ready for typed API hardening.
+    format: Updated pubspec/analyzer files and analyzer summary in task output.
+  - from_task: TASK-001
+    to_task: TASK-004
+    interface: Backward-compatibility checklist for legacy API usage.
+    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+  - from_task: TASK-004
+    to_task: TASK-006
+    interface: Final typed API contracts and migration-safe call patterns.
+    format: Public API diff summary and examples.
+  - from_task: TASK-005
+    to_task: TASK-006
+    interface: Performance decision outcome (optimized or explicitly skipped) and rationale.
+    format: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
+
+tasks:
+  - id: TASK-001
+    title: Consolidate Research Baseline and Artifact Pack
+    description: |
+      Perform one consolidated research pass to produce the mandatory handoff artifacts:
+      compatibility checklist, regression corpus, and profile baseline. Capture current Flutter/Dart
+      constraints, public API usage, callback behavior, and hot-path profiling observations.
+    wave: 1
+    agent: gem-researcher
+    prototype: false
+    covers: [AC-001, AC-003, AC-005, AC-006]
+    priority: high
+    status: pending
+    dependencies: []
+    conflicts_with: []
+    context_files:
+      - path: pubspec.yaml
+        description: Current root SDK and dependency constraints.
+      - path: example/pubspec.yaml
+        description: Current example app constraints.
+      - path: lib/controllers/regex_pattern_text_editing_controller.dart
+        description: Matching/rendering behavior and callback sequencing.
+      - path: README.md
+        description: Consumer-facing API usage patterns.
+    planning_history:
+      - pass: 2
+        reason: Merge duplicated research tasks and enforce explicit artifact outputs.
+        timestamp: 2026-04-05T00:00:00Z
+        estimated_effort: medium
+        estimated_files: 3
+        estimated_lines: 220
+        focus_area: Baseline evidence and artifacts
+        verification:
+          - compatibility_checklist.md is created and complete.
+          - regression_corpus.yaml covers match and non-match cases.
+          - profile_baseline.md contains measurable baseline metrics.
+        acceptance_criteria:
+          - Research artifacts exist at explicit paths for downstream handoffs.
+          - Baseline behavior and toolchain facts are unambiguous.
+        failure_modes:
+          - scenario: Research artifacts are incomplete and block decision quality.
+            likelihood: medium
+            impact: high
+            mitigation: Use artifact template with required sections and completion checklist.
+
+  - id: TASK-002
+    title: Run Mandatory Decision Gate for Baseline and Release Strategy
+    description: |
+      Execute an explicit decision gate immediately after research. Lock the minimum supported
+      Flutter/Dart baseline, release strategy (minor with deprecations or major), and profile-first
+      criteria for whether optimization work proceeds. Record all decisions in a signed-off artifact.
+    wave: 2
+    agent: gem-reviewer
+    prototype: false
+    covers: [AC-001, AC-003, AC-005]
+    priority: high
+    status: pending
+    dependencies:
+      - TASK-001
+    conflicts_with: []
+    context_files:
+      - path: docs/PRD.yaml
+        description: Source of scope and acceptance criteria.
+      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+        description: Compatibility evidence.
+      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
+        description: Profiling evidence for optimization decision.
+    planning_history:
+      - pass: 2
+        reason: Resolve prior ambiguity around baseline and release approach before coding.
+        timestamp: 2026-04-05T00:00:00Z
+        estimated_effort: small
+        estimated_files: 2
+        estimated_lines: 120
+        focus_area: Governance gate
+        verification:
+          - decision_record.md includes baseline, release strategy, and optimization go/no-go.
+          - All implementation tasks reference decision_record.md.
+        acceptance_criteria:
+          - Baseline and release strategy are locked before implementation.
+          - Optimization track has explicit conditional trigger.
+        failure_modes:
+          - scenario: Gate record is vague and does not constrain downstream work.
+            likelihood: medium
+            impact: high
+            mitigation: Require explicit version bounds and binary go/no-go criterion.
+        requires_review: true
+        review_depth: full
+        review_security_sensitive: false
+
+  - id: TASK-003
+    title: Apply Locked Tooling Upgrade and Deprecation Remediation
+    description: |
+      Implement the approved tooling baseline in root/example pubspec and analyzer config,
+      then remediate framework deprecations required for clean analysis under the locked baseline.
+      Keep changes migration-safe and aligned with decision gate constraints.
+    wave: 3
+    agent: gem-implementer
+    prototype: false
+    covers: [AC-001, AC-002, AC-003]
+    priority: high
+    status: pending
+    dependencies:
+      - TASK-002
+    conflicts_with: []
+    context_files:
+      - path: pubspec.yaml
+        description: Root package constraints and deps.
+      - path: example/pubspec.yaml
+        description: Example constraints and publishability settings.
+      - path: analysis_options.yaml
+        description: Lint/analyzer settings.
+      - path: lib/widgets/regex_pattern_text_field.dart
+        description: Deprecated API usage remediation.
+    planning_history:
+      - pass: 2
+        reason: Merge tooling and deprecation tasks to reduce handoff overhead.
+        timestamp: 2026-04-05T00:00:00Z
+        estimated_effort: medium
+        estimated_files: 3
+        estimated_lines: 280
+        focus_area: Baseline modernization
+        verification:
+          - flutter pub get succeeds in root and example.
+          - flutter analyze has no new critical issues.
+        acceptance_criteria:
+          - Tooling baseline changes are implemented per decision gate.
+          - Deprecations are resolved without avoidable breakage.
+        failure_modes:
+          - scenario: New lint baseline causes blocker-level analyzer noise.
+            likelihood: medium
+            impact: medium
+            mitigation: Apply scoped compatibility-safe lint overrides and track follow-up cleanup.
+        tech_stack:
+          - Flutter stable
+          - Dart SDK constraints
+          - flutter_lints
+        test_coverage: null
+
+  - id: TASK-004
+    title: Implement Typed API Hardening with Deprecation-First Migration
+    description: |
+      Introduce typed public API alternatives and callback contracts while preserving existing
+      usage through deprecations and compatibility shims. Ensure behavior remains aligned with
+      compatibility checklist and regression corpus.
+    wave: 4
+    agent: gem-implementer
+    prototype: false
+    covers: [AC-003, AC-004]
+    priority: high
+    status: pending
+    dependencies:
+      - TASK-003
+    conflicts_with: []
+    context_files:
+      - path: lib/models/regex_pattern_matched.dart
+        description: Typed migration for currently dynamic fields.
+      - path: lib/models/regex_pattern_text_style.dart
+        description: Public style metadata typing.
+      - path: lib/widgets/regex_pattern_text_field.dart
+        description: Callback type contracts.
+      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/compatibility_checklist.md
+        description: Backward-compatibility constraints.
+    planning_history:
+      - pass: 2
+        reason: Preserve source compatibility while reducing dynamic surface.
+        timestamp: 2026-04-05T00:00:00Z
+        estimated_effort: medium
+        estimated_files: 3
+        estimated_lines: 300
+        focus_area: API typing
+        verification:
+          - Typed and legacy paths compile.
+          - Deprecation messages and migration path are documented.
+        acceptance_criteria:
+          - Dynamic public types are reduced with typed alternatives.
+          - Legacy usage remains functional under deprecation policy.
+        failure_modes:
+          - scenario: Type changes alter runtime callback behavior.
+            likelihood: medium
+            impact: high
+            mitigation: Validate with regression corpus and callback-flow tests.
+        tech_stack:
+          - Dart generics
+          - Flutter callbacks
+        test_coverage: Compile-time and unit-level API compatibility checks
+
+  - id: TASK-005
+    title: Execute Conditional Performance Track (Profile-First)
+    description: |
+      Evaluate profile_baseline.md against decision gate thresholds. If a measurable bottleneck
+      is confirmed, implement minimal-risk optimization and validate no behavior drift. If threshold
+      is not met, skip code optimization and publish a "no-op by design" decision artifact.
+    wave: 5
+    agent: gem-implementer
+    prototype: false
+    covers: [AC-005]
+    priority: medium
+    status: pending
+    dependencies:
+      - TASK-002
+      - TASK-004
+    conflicts_with: []
+    context_files:
+      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/profile_baseline.md
+        description: Measured baseline profile evidence.
+      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/decision_record.md
+        description: Optimization go/no-go criteria.
+      - path: lib/controllers/regex_pattern_text_editing_controller.dart
+        description: Potential hot-path optimization area.
+    planning_history:
+      - pass: 2
+        reason: Make performance work conditional to avoid unnecessary risk.
+        timestamp: 2026-04-05T00:00:00Z
+        estimated_effort: small
+        estimated_files: 3
+        estimated_lines: 180
+        focus_area: Profile-first optimization
+        verification:
+          - performance_decision.md records go/no-go and rationale.
+          - If optimization executed, regression corpus remains green.
+        acceptance_criteria:
+          - Optimization only occurs when measurable bottleneck exists.
+          - No behavior regression from any optimization.
+        failure_modes:
+          - scenario: Optimization pursued despite weak evidence.
+            likelihood: medium
+            impact: medium
+            mitigation: Enforce numeric threshold from decision gate and reviewer sign-off.
+        tech_stack:
+          - Dart RegExp
+          - Flutter TextEditingController
+        test_coverage: Regression and targeted performance scenarios
+
+  - id: TASK-006
+    title: Consolidate Quality Outputs: Tests, Example, and Release Docs
+    description: |
+      Merge final quality outputs into one delivery wave: expand tests with regression corpus,
+      update example app to recommended APIs, and finalize README/CHANGELOG migration guidance
+      including compatibility statement and deprecation timeline.
+    wave: 6
+    agent: gem-implementer
+    prototype: false
+    covers: [AC-006, AC-007, AC-008]
+    priority: high
+    status: pending
+    dependencies:
+      - TASK-004
+      - TASK-005
+    conflicts_with: []
+    context_files:
+      - path: test/
+        description: Coverage expansion target.
+      - path: example/lib/main.dart
+        description: Upgraded usage demo.
+      - path: README.md
+        description: Migration guidance.
+      - path: CHANGELOG.md
+        description: Release notes and deprecation window.
+      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/regression_corpus.yaml
+        description: Canonical behavioral scenarios.
+    planning_history:
+      - pass: 2
+        reason: Reduce process overhead by combining tightly-coupled quality outputs.
+        timestamp: 2026-04-05T00:00:00Z
+        estimated_effort: medium
+        estimated_files: 3
+        estimated_lines: 300
+        focus_area: Integrated release quality
+        verification:
+          - flutter test passes with corpus-backed scenarios.
+          - Example compiles and reflects recommended APIs.
+          - README and CHANGELOG accurately describe migration.
+        acceptance_criteria:
+          - Behavior is covered by automated tests.
+          - Consumer docs and example are in sync with implemented APIs.
+        failure_modes:
+          - scenario: Combined wave hides incomplete doc/test sync.
+            likelihood: medium
+            impact: medium
+            mitigation: Use explicit checklist mapping tests, example snippets, and doc sections.
+        tech_stack:
+          - flutter_test
+          - Flutter example app
+          - Markdown docs
+        test_coverage: Unit and widget coverage for matching and callback flows
+
+  - id: TASK-007
+    title: Final Execution Readiness Review Gate
+    description: |
+      Run a final independent quality review over analyzer/test outcomes, API compatibility,
+      performance decision correctness, and release documentation completeness. Issue explicit
+      go/no-go recommendation for release execution.
+    wave: 7
+    agent: gem-reviewer
+    prototype: false
+    covers: [AC-002, AC-003, AC-005, AC-006, AC-008]
+    priority: high
+    status: pending
+    dependencies:
+      - TASK-006
+    conflicts_with: []
+    context_files:
+      - path: lib/
+        description: Final API and behavior implementation.
+      - path: test/
+        description: Regression and compatibility coverage.
+      - path: docs/plan/upgrade-flutter-tooling-and-quality-2026-04-05/artifacts/performance_decision.md
+        description: Conditional optimization outcome.
+      - path: README.md
+        description: Final migration guidance.
+    planning_history:
+      - pass: 2
+        reason: Preserve independent review quality after process simplification.
+        timestamp: 2026-04-05T00:00:00Z
+        estimated_effort: small
+        estimated_files: 2
+        estimated_lines: 120
+        focus_area: Release gate
+        verification:
+          - Review output includes explicit go/no-go status.
+          - Remaining risks are documented and categorized.
+        acceptance_criteria:
+          - Execution readiness is explicit and evidence-backed.
+          - No unresolved blocking risk remains hidden.
+        failure_modes:
+          - scenario: Late compatibility issue discovered after docs finalized.
+            likelihood: low
+            impact: high
+            mitigation: Cross-check against compatibility checklist and example compile validation.
+        requires_review: true
+        review_depth: full
+        review_security_sensitive: false

@@ -1,0 +1,43 @@
+version: 1
+description: Canonical behavior scenarios for regex matching and callback flow.
+
+scenarios:
+  - id: RC-001
+    title: Email match with default styles
+    input: "Contact me at user@example.com"
+    expected_matches:
+      - type: email
+        text: user@example.com
+
+  - id: RC-002
+    title: URL and hashtag mixed content
+    input: "Visit https://flutter.dev #flutter"
+    expected_matches:
+      - type: url
+        text: https://flutter.dev
+      - type: hashtag
+        text: "#flutter"
+
+  - id: RC-003
+    title: Custom pattern type
+    input: "%token regular"
+    expected_matches:
+      - type: custom
+        text: "%token"
+
+  - id: RC-004
+    title: Non-match callback flow
+    input: "plain text"
+    expected_matches: []
+    expect_non_match_callback: true
+
+  - id: RC-005
+    title: Style application preserves unmatched text
+    input: "mail user@example.com tail"
+    expected_rich_text_segments:
+      - text: "mail "
+        styled: false
+      - text: user@example.com
+        styled: true
+      - text: " tail"
+        styled: false

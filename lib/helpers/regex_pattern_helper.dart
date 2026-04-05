@@ -1,15 +1,18 @@
 abstract final class RegexPatternHelper {
   /// Github repository regex
-  static const String github = r'((git|ssh|http(s)?)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:/\-~]+)(\.git)(\/)?';
+  static const String github =
+      r'((git|ssh|http(s)?)|(git@[\w\.]+))(:(\/\/)?)([\w\.@\:/\-~]+)(\.git)(\/)?';
 
   /// Twitter regex
   static const String twitter = r'(?:(?:twitter?|tw): @)+[\w/\-_?=%.]+';
 
   /// Facebook regex
-  static const String facebook = r'(?:(?:facebook?|fb?|Facebook): @)+[\w/\-_?=%.]+';
+  static const String facebook =
+      r'(?:(?:facebook?|fb?|Facebook): @)+[\w/\-_?=%.]+';
 
   /// InstagramPattern regex
-  static const String instagram = r'(?:(?:instagram?|insta?|Instagram): @)+[\w/\-_?=%.]+';
+  static const String instagram =
+      r'(?:(?:instagram?|insta?|Instagram): @)+[\w/\-_?=%.]+';
 
   /// Phone Number regex
   static const String phone =
