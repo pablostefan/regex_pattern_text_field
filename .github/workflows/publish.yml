@@ -32,4 +32,4 @@ jobs:
           flutter test
 
       - name: Publish to pub.dev
-        run: flutter pub publish --force
+        run: dart pub publish --force
