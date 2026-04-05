@@ -2,6 +2,7 @@
 
 <p align="left">
   <a href="https://github.com/pablostefan/regex_pattern_text_field/actions/workflows/ci.yml"><img src="https://github.com/pablostefan/regex_pattern_text_field/actions/workflows/ci.yml/badge.svg" alt="ci"></a>
+  <a href="https://github.com/pablostefan/regex_pattern_text_field/actions/workflows/publish.yml"><img src="https://github.com/pablostefan/regex_pattern_text_field/actions/workflows/publish.yml/badge.svg" alt="publish"></a>
   <a href="https://pub.dev/packages/regex_pattern_text_field"><img src="https://img.shields.io/pub/v/regex_pattern_text_field.svg" alt="pub version"></a>
   <a href="https://pub.dev/packages/regex_pattern_text_field"><img src="https://img.shields.io/pub/likes/regex_pattern_text_field" alt="pub likes"></a>
   <a href="https://pub.dev/packages/regex_pattern_text_field"><img src="https://img.shields.io/pub/points/regex_pattern_text_field" alt="pub points"></a>
@@ -150,6 +151,17 @@ flutter test
 ```
 
 The suite covers controller behavior, helper matching rules, and widget callback flow.
+
+### Automated Publish (GitHub Actions)
+
+1. In pub.dev package settings, enable `Publishing from GitHub Actions`.
+2. Create and push a version tag in this format: `vX.Y.Z`.
+3. The workflow in `.github/workflows/publish.yml` will run analyze, tests, and publish.
+
+```bash
+git tag v1.1.1
+git push origin v1.1.1
+```
 
 ### Contributing
 
